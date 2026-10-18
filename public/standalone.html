@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>아다지오 발레 (Adagio Ballet) | 사내동호회</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f5f3ff',
+              100: '#ede9fe',
+              200: '#ddd6fe',
+              500: '#8b5cf6',
+              600: '#7c3aed',
+              700: '#6d28d9',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #fbfbfe;
+      color: #1e1b2e;
+      -webkit-font-smoothing: antialiased;
+      touch-action: manipulation;
+    }
+    button, a, input, select {
+      touch-action: manipulation;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-purple-100">
+
+  <!-- ================= TOP HEADER ================= -->
+  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-purple-100/70 shadow-xs">
+    <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-violet-600 to-purple-400 text-white flex items-center justify-center font-serif font-black text-sm shadow-xs">
+          AB
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <span class="font-bold text-slate-800 text-base tracking-tight">Adagio Ballet</span>
+            <span class="text-[10px] bg-violet-50 text-violet-700 font-semibold px-1.5 py-0.5 rounded-md border border-violet-200/80">사내동호회</span>
+          </div>
+          <p class="text-[11px] text-slate-400">수강권 · 1회 쿠폰 간편신청</p>
+        </div>
+      </div>
+
+      <!-- User Role Status & Switcher -->
+      <div id="header-user-area" class="flex items-center gap-2">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTENT CONTAINER ================= -->
+  <main class="flex-1 max-w-md w-full mx-auto px-4 pt-4 pb-24">
+    <!-- Tab 1: Tickets -->
+    <div id="tab-tickets" class="space-y-4"></div>
+
+    <!-- Tab 2: Schedule -->
+    <div id="tab-schedule" class="space-y-4 hidden"></div>
+
+    <!-- Tab 3: Notices -->
+    <div id="tab-notices" class="space-y-4 hidden"></div>
+
+    <!-- Tab 4: Admin -->
+    <div id="tab-admin" class="space-y-4 hidden"></div>
+
+    <!-- Tab 5: Profile -->
+    <div id="tab-profile" class="space-y-4 hidden"></div>
+  </main>
+
+  <!-- ================= BOTTOM NAVIGATION ================= -->
+  <nav class="fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-purple-100/80 shadow-md">
+    <div class="max-w-md mx-auto grid grid-cols-5 px-1 py-1.5">
+      <button type="button" onclick="setTab('tickets')" id="nav-btn-tickets" class="relative flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all text-violet-700 font-bold scale-105">
+        <i data-lucide="ticket" class="w-5 h-5"></i>
+        <span class="text-[11px] mt-1 tracking-tighter">수강권·쿠폰</span>
+        <span class="absolute bottom-0 w-8 h-0.5 bg-violet-600 rounded-full"></span>
+      </button>
+
+      <button type="button" onclick="setTab('schedule')" id="nav-btn-schedule" class="relative flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all text-slate-400 hover:text-slate-600 font-medium">
+        <i data-lucide="calendar" class="w-5 h-5"></i>
+        <span class="text-[11px] mt-1 tracking-tighter">시간표·예약</span>
+      </button>
+
+      <button type="button" onclick="setTab('notices')" id="nav-btn-notices" class="relative flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all text-slate-400 hover:text-slate-600 font-medium">
+        <i data-lucide="bell" class="w-5 h-5"></i>
+        <span class="text-[11px] mt-1 tracking-tighter">공지사항</span>
+      </button>
+
+      <button type="button" onclick="setTab('admin')" id="nav-btn-admin" class="relative flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all text-slate-400 hover:text-slate-600 font-medium">
+        <div class="relative">
+          <i data-lucide="shield-check" class="w-5 h-5"></i>
+          <span id="nav-admin-badge" class="hidden absolute -top-1.5 -right-2 bg-violet-600 text-white text-[10px] font-bold rounded-full w-4 h-4 items-center justify-center ring-2 ring-white">0</span>
+        </div>
+        <span class="text-[11px] mt-1 tracking-tighter">운영진</span>
+      </button>
+
+      <button type="button" onclick="setTab('profile')" id="nav-btn-profile" class="relative flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all text-slate-400 hover:text-slate-600 font-medium">
+        <i data-lucide="user" class="w-5 h-5"></i>
+        <span class="text-[11px] mt-1 tracking-tighter">내정보</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ================= TOSS PAYMENT MODAL ================= -->
+  <div id="toss-modal" class="fixed inset-0 z-50 hidden flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-xs p-0 sm:p-4 animate-in fade-in">
+    <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl border border-violet-100 overflow-hidden max-h-[92vh] flex flex-col">
+      <div class="p-4 border-b border-slate-100 flex items-center justify-between bg-violet-50/50">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-violet-600"></span>
+          <h3 class="font-bold text-slate-900 text-base">수강권 신청 및 입금 안내</h3>
+        </div>
+        <button type="button" onclick="closeTossModal()" class="p-1 rounded-full text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="p-5 overflow-y-auto space-y-4">
+        <div id="toss-modal-product" class="bg-slate-50/80 rounded-2xl p-4 border border-slate-200/90"></div>
+
+        <!-- Toss Deep Link Button -->
+        <div class="space-y-1.5">
+          <label class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-violet-600"></i>
+            토스(Toss) 간편 송금
+          </label>
+          <button type="button" onclick="openTossApp()" class="w-full py-3.5 px-4 rounded-2xl bg-[#0064FF] hover:bg-[#0052cc] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.99]">
+            <span class="text-base font-extrabold tracking-tight">toss</span>
+            <span>토스 앱으로 바로 송금하기</span>
+            <i data-lucide="external-link" class="w-4 h-4 opacity-80"></i>
+          </button>
+          <p class="text-[11px] text-slate-400 text-center">버튼 클릭 시 토스 앱이 열리며 계좌와 금액이 자동 입력됩니다.</p>
+        </div>
+
+        <!-- Bank Account Copy Box -->
+        <div class="p-3.5 bg-slate-50/80 rounded-2xl border border-slate-200/80 space-y-2">
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-slate-500 font-medium">동호회 공식 입금 계좌</span>
+            <button type="button" onclick="copyAccount()" id="copy-btn-text" class="text-violet-700 hover:text-violet-900 font-semibold text-[11px] bg-white px-2.5 py-1 rounded-lg border border-slate-200 flex items-center gap-1">
+              <i data-lucide="copy" class="w-3 h-3"></i>
+              <span>계좌 복사</span>
+            </button>
+          </div>
+          <div class="text-sm font-bold text-slate-800 font-mono tracking-tight">토스뱅크 1000-2468-1357</div>
+          <div class="text-[11px] text-slate-500">예금주: <span class="font-semibold text-slate-700">아다지오(발레동호회)</span></div>
+        </div>
+
+        <!-- Form: Depositor Name -->
+        <form onsubmit="submitPaymentRequest(event)" class="space-y-3.5 pt-1">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">입금자명 (실제 송금인 성함)</label>
+            <input type="text" id="input-depositor-name" required placeholder="예: 김발레" class="w-full px-3.5 py-2.5 rounded-2xl border border-slate-200 text-sm focus:ring-2 focus:ring-violet-500 bg-slate-50/50 font-medium outline-none">
+            <p class="text-[11px] text-slate-400 mt-1">운영진이 통장 내역과 대조하므로 실제 이름을 입력해주세요.</p>
+          </div>
+
+          <div class="bg-amber-50 rounded-2xl p-3 border border-amber-200/60 flex items-start gap-2 text-amber-800 text-[11px] leading-relaxed">
+            <i data-lucide="shield-alert" class="w-4 h-4 text-amber-600 shrink-0 mt-0.5"></i>
+            <div>송금 후 아래 <strong>[입금완료 요청]</strong> 버튼을 꼭 눌러주세요. 운영진 확인 즉시 스튜디오메이트에 수강권이 충전됩니다.</div>
+          </div>
+
+          <button type="submit" class="w-full py-3.5 rounded-2xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-sm shadow-sm transition-all active:scale-[0.99]">
+            입금완료 요청 보내기
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 15th REFUND MODAL ================= -->
+  <div id="refund-modal" class="fixed inset-0 z-50 hidden flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-xs p-0 sm:p-4 animate-in fade-in">
+    <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl border border-violet-100 overflow-hidden max-h-[92vh] flex flex-col">
+      <div class="p-4 border-b border-slate-100 flex items-center justify-between bg-violet-50/50">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-violet-600"></span>
+          <h3 class="font-bold text-slate-900 text-base">수강권 15일 환불 신청</h3>
+        </div>
+        <button type="button" onclick="closeRefundModal()" class="p-1 rounded-full text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="p-5 overflow-y-auto space-y-4">
+        <div id="refund-modal-ticket-info" class="bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80"></div>
+
+        <form onsubmit="submitRefundRequest(event)" class="space-y-3.5">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">환불 입금 은행</label>
+            <select id="refund-bank" class="w-full px-3.5 py-2.5 rounded-2xl border border-slate-200 text-sm bg-slate-50/50 outline-none">
+              <option value="토스뱅크">토스뱅크</option>
+              <option value="카카오뱅크">카카오뱅크</option>
+              <option value="국민은행">국민은행</option>
+              <option value="신한은행">신한은행</option>
+              <option value="우리은행">우리은행</option>
+              <option value="하나은행">하나은행</option>
+              <option value="기업은행">기업은행</option>
+              <option value="농협은행">농협은행</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">계좌번호</label>
+            <input type="text" id="refund-account" required placeholder="예: 110-123-456789" class="w-full px-3.5 py-2.5 rounded-2xl border border-slate-200 text-sm font-mono bg-slate-50/50 outline-none">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">예금주</label>
+            <input type="text" id="refund-holder" required placeholder="예금주 성함" class="w-full px-3.5 py-2.5 rounded-2xl border border-slate-200 text-sm bg-slate-50/50 outline-none">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">환불 사유</label>
+            <textarea id="refund-reason" rows="2" placeholder="환불 사유를 적어주세요 (업무 바쁨/출장 등)" class="w-full px-3.5 py-2 rounded-2xl border border-slate-200 text-xs bg-slate-50/50 resize-none outline-none"></textarea>
+          </div>
+
+          <div class="bg-amber-50 rounded-2xl p-3 border border-amber-200/60 flex items-start gap-2 text-amber-800 text-[11px] leading-relaxed">
+            <i data-lucide="alert-circle" class="w-4 h-4 text-amber-600 shrink-0 mt-0.5"></i>
+            <div>잔여 횟수에 비례하여 산출된 환불 금액은 동호회 정산일인 <strong>매월 15일</strong>에 계좌로 일괄 입금됩니다.</div>
+          </div>
+
+          <button type="submit" class="w-full py-3.5 rounded-2xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-sm shadow-xs transition-all active:scale-[0.99]">
+            환불 요청 접수하기
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-msg" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 hidden max-w-sm w-[90%] p-3.5 bg-violet-900/95 text-white text-xs rounded-2xl shadow-xl flex items-center gap-2.5 border border-violet-700/60 backdrop-blur-md">
+    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+    <span id="toast-text" class="font-medium leading-relaxed"></span>
+  </div>
+
+  <!-- ================= JAVASCRIPT APPLICATION CORE ================= -->
+  <script>
+    // --- Data Models ---
+    const CLUB_INFO = {
+      name: '아다지오 발레 (Adagio Ballet)',
+      bankName: '토스뱅크',
+      accountNumber: '1000-2468-1357',
+      accountHolder: '아다지오(발레동호회)',
+      refundDayText: '매월 15일 일괄 정산',
+    };
+
+    const TICKET_TYPES = [
+      {
+        id: 'ticket-coupon-full',
+        title: '1회 쿠폰 (Full 80분)',
+        description: '80분 정규 수업 및 금요 파드되(Full) 1회 수강용',
+        price: 15000,
+        validDays: 30,
+        category: 'coupon',
+      },
+      {
+        id: 'ticket-coupon-half',
+        title: '1회 쿠폰 (Half 40분 / 런치)',
+        description: '40분 런치 스트레칭, 포인트 입문, 월요 입문반 1회 수강용',
+        price: 10000,
+        validDays: 30,
+        category: 'coupon',
+      },
+      {
+        id: 'ticket-regular-full-4',
+        title: 'Full 정기 수강권 (4회)',
+        description: '80분 정규 및 금요 파드되 월 4회 (취소·보강 1회 가능)',
+        totalCount: 4,
+        maxCancellations: 1,
+        price: 50000,
+        validDays: 31,
+        category: 'regular',
+      },
+      {
+        id: 'ticket-regular-half-4',
+        title: 'Half 정기 수강권 (4회)',
+        description: '40분 런치 스트레칭 및 Half 클래스 월 4회 (취소·보강 1회 가능)',
+        totalCount: 4,
+        maxCancellations: 1,
+        price: 25000,
+        validDays: 31,
+        category: 'regular',
+      },
+      {
+        id: 'ticket-regular-full-8',
+        title: 'Full 정기 수강권 (8회)',
+        description: '80분 정규 및 금요 파드되 월 8회 (주 2회 권장, 취소·보강 2회 가능)',
+        totalCount: 8,
+        maxCancellations: 2,
+        price: 100000,
+        validDays: 31,
+        category: 'regular',
+      },
+      {
+        id: 'ticket-regular-half-8',
+        title: 'Half 정기 수강권 (8회)',
+        description: '40분 런치 스트레칭 및 Half 클래스 월 8회 (주 2회 권장, 취소·보강 2회 가능)',
+        totalCount: 8,
+        maxCancellations: 2,
+        price: 50000,
+        validDays: 31,
+        category: 'regular',
+      },
+    ];
+
+    const INITIAL_CLASSES = [
+      // 월요일
+      { id: 'class-mon-half', dayOfWeek: 'mon', dayLabel: '월요일', time: '17:40 ~ 18:20 (40분 Half)', title: '월요일_입문반', instructor: '민경림 강사', level: '입문/기초', capacity: 14, description: '발레 기본 정렬, 플리에, 탄듀 등 기초 매트와 바 기본기 40분 Half 클래스' },
+      { id: 'class-mon-1', dayOfWeek: 'mon', dayLabel: '월요일', time: '18:20 ~ 19:40 (80분 Full)', title: '월요일_Lev 0.5', instructor: '민경림 강사', level: 'Lev 0.5', capacity: 14, description: '기초 바워크와 가벼운 센터 연결 동작을 꼼꼼하게 다듬는 80분 Full 클래스' },
+      { id: 'class-mon-2', dayOfWeek: 'mon', dayLabel: '월요일', time: '19:40 ~ 21:00 (80분 Full)', title: '월요일_Lev 1', instructor: '민경림 강사', level: 'Lev 1', capacity: 14, description: '바워크와 아다지오, 알레그로 점프, 턴 테크닉을 함께 훈련하는 80분 Full 클래스' },
+      // 화요일
+      { id: 'class-tue-lunch-1', dayOfWeek: 'tue', dayLabel: '화요일', time: '11:40 ~ 12:20 (40분 런치)', title: '화_런치_스트레칭1', instructor: '김진희 강사', level: '전체 레벨', capacity: 14, description: '점심시간 40분을 활용해 굳은 몸을 부드럽게 이완하는 런치 스트레칭 1차' },
+      { id: 'class-tue-lunch-2', dayOfWeek: 'tue', dayLabel: '화요일', time: '12:20 ~ 13:00 (40분 런치)', title: '화_런치_스트레칭2', instructor: '김진희 강사', level: '전체 레벨', capacity: 14, description: '점심시간 40분을 활용해 코어와 골반 정렬을 깨우는 런치 스트레칭 2차' },
+      { id: 'class-tue-1', dayOfWeek: 'tue', dayLabel: '화요일', time: '17:40 ~ 19:00 (80분 Full)', title: '화요일_Lev 0.5', instructor: '김진희 강사', level: 'Lev 0.5', capacity: 14, description: '퇴근 후 기본기를 정교하게 다듬고 자세를 바르게 세우는 80분 Full 클래스' },
+      { id: 'class-tue-2', dayOfWeek: 'tue', dayLabel: '화요일', time: '19:00 ~ 20:20 (80분 Full)', title: '화요일_Lev 1', instructor: '김진희 강사', level: 'Lev 1', capacity: 14, description: '디테일한 폴드브라 라인과 센터 콤비네이션을 연습하는 80분 Full 클래스' },
+      { id: 'class-tue-point', dayOfWeek: 'tue', dayLabel: '화요일', time: '20:20 ~ 21:00 (40분 Half)', title: '화요일_포인트 입문', instructor: '김진희 강사', level: '포인트 입문', capacity: 14, description: '발목 강화 테라밴드 운동 및 토슈즈 바워크 기초 40분 집중 클래스' },
+      // 수요일
+      { id: 'class-wed-1', dayOfWeek: 'wed', dayLabel: '수요일', time: '17:40 ~ 19:00 (80분 Full)', title: '수요일_Lev 1', instructor: '이명은 강사', level: 'Lev 1', capacity: 14, description: '안정적인 축과 중심이동을 익히는 체계적인 80분 Full 바&센터 클래스' },
+      { id: 'class-wed-2', dayOfWeek: 'wed', dayLabel: '수요일', time: '19:00 ~ 20:20 (80분 Full)', title: '수요일_Lev 1.5', instructor: '이명은 강사', level: 'Lev 1.5', capacity: 14, description: '다양한 왈츠와 점프, 피루엣 회전 연결을 소화하는 80분 심화 클래스' },
+      // 목요일
+      { id: 'class-thu-1', dayOfWeek: 'thu', dayLabel: '목요일', time: '17:40 ~ 19:00 (80분 Full)', title: '목요일_Lev 0.5', instructor: '김진희 강사', level: 'Lev 0.5', capacity: 14, description: '목요일 저녁 피로를 날리는 정갈한 클래식 바워크와 코어 강화 클래스' },
+      { id: 'class-thu-2', dayOfWeek: 'thu', dayLabel: '목요일', time: '19:00 ~ 20:20 (80분 Full)', title: '목요일_Lev 1', instructor: '김진희 강사', level: 'Lev 1', capacity: 14, description: '그랑 플리에부터 그랑 바뜨망, 센터 동작까지 이어지는 완성도 높은 클래스' },
+      // 금요일 (파드되 소수정예 5명!)
+      { id: 'class-fri-lunch', dayOfWeek: 'fri', dayLabel: '금요일', time: '12:20 ~ 13:00 (40분 런치)', title: '금_런치_스트레칭2', instructor: '민경림 강사', level: '전체 레벨', capacity: 14, description: '금요일 점심시간 리프레시를 위한 전신 순환 스트레칭 40분' },
+      { id: 'class-fri-1', dayOfWeek: 'fri', dayLabel: '금요일', time: '17:40 ~ 19:00 (80분 Full)', title: '금요일_lev1', instructor: '홍성우 강사', level: 'Lev 1', capacity: 14, description: '발레리노 홍성우 강사님과 함께하는 다이나믹한 금요 정규 Lev 1 클래스' },
+      { id: 'class-fri-2', dayOfWeek: 'fri', dayLabel: '금요일', time: '19:00 ~ 20:20 (80분 Full)', title: '금요일_lev1.5', instructor: '홍성우 강사', level: 'Lev 1.5', capacity: 14, description: '센터 테크닉과 점프, 표현력을 극대화하는 금요 심화 80분 Full 클래스' },
+      { id: 'class-fri-pasdedeux', dayOfWeek: 'fri', dayLabel: '금요일', time: '20:20 ~ 21:40 (80분 Full)', title: '금요일_파드되 (Pas de deux)', instructor: '홍성우 강사', level: '파드되 (소수정예)', capacity: 5, description: '★ 홍성우 강사님과 1:1 파트너링을 훈련하는 Full 클래스 (파드되 소수정예 정원 5명 마감)' },
+    ];
+
+    const WEEKS = [
+      { id: 'w1', label: '10월 4주차 (10.21 ~ 10.25)', badge: '정규 시간표', dates: { mon: '10/21', tue: '10/22', wed: '10/23', thu: '10/24', fri: '10/25' } },
+      { id: 'w2', label: '10월 5주차 (10.28 ~ 11.01)', badge: '10월 마감주', dates: { mon: '10/28', tue: '10/29', wed: '10/30', thu: '10/31', fri: '11/01' } },
+      { id: 'w3', label: '11월 1주차 (11.04 ~ 11.08)', badge: '11월 신규', dates: { mon: '11/04', tue: '11/05', wed: '11/06', thu: '11/07', fri: '11/08' } },
+    ];
+
+    // State
+    let currentUser = { id: 'u1', name: '김발레', role: 'member', phone: '010-1234-5678', department: '개발솔루션팀' };
+    let currentTab = 'tickets';
+    let selectedTicketType = null;
+    let selectedRefundTicket = null;
+    let selectedDay = 'fri';
+    let selectedWeekId = 'w1';
+    let ticketFilter = 'all';
+
+    let userTickets = [
+      { id: 'ut-1', title: 'Full 정기 수강권 (4회)', remainingCount: 3, totalCount: 4, maxCancellations: 1, cancellationCount: 0, expiresAt: '2026-11-30' }
+    ];
+    let paymentRequests = [];
+    let refundRequests = [];
+    let bookings = [];
+    let classes = [...INITIAL_CLASSES];
+
+    // Load LocalStorage
+    try {
+      const savedUser = localStorage.getItem('adagio_user_standalone');
+      if (savedUser) currentUser = JSON.parse(savedUser);
+      const savedTickets = localStorage.getItem('adagio_tickets_standalone');
+      if (savedTickets) userTickets = JSON.parse(savedTickets);
+      const savedPayments = localStorage.getItem('adagio_payments_standalone');
+      if (savedPayments) paymentRequests = JSON.parse(savedPayments);
+      const savedRefunds = localStorage.getItem('adagio_refunds_standalone');
+      if (savedRefunds) refundRequests = JSON.parse(savedRefunds);
+      const savedClasses = localStorage.getItem('adagio_classes_standalone');
+      if (savedClasses) classes = JSON.parse(savedClasses);
+    } catch(e) {}
+
+    function saveState() {
+      try {
+        localStorage.setItem('adagio_user_standalone', JSON.stringify(currentUser));
+        localStorage.setItem('adagio_tickets_standalone', JSON.stringify(userTickets));
+        localStorage.setItem('adagio_payments_standalone', JSON.stringify(paymentRequests));
+        localStorage.setItem('adagio_refunds_standalone', JSON.stringify(refundRequests));
+        localStorage.setItem('adagio_classes_standalone', JSON.stringify(classes));
+      } catch(e) {}
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast-msg');
+      document.getElementById('toast-text').innerText = msg;
+      t.classList.remove('hidden');
+      setTimeout(() => t.classList.add('hidden'), 3500);
+    }
+
+    function setTab(tab) {
+      currentTab = tab;
+      ['tickets', 'schedule', 'notices', 'admin', 'profile'].forEach(t => {
+        document.getElementById(`tab-${t}`).classList.toggle('hidden', t !== tab);
+        const btn = document.getElementById(`nav-btn-${t}`);
+        if (t === tab) {
+          btn.className = "relative flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all text-violet-700 font-bold scale-105";
+        } else {
+          btn.className = "relative flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all text-slate-400 hover:text-slate-600 font-medium";
+        }
+      });
+      render();
+    }
+
+    function switchRole(role) {
+      currentUser.role = role;
+      currentUser.name = role === 'admin' ? '최운영(회장)' : '김발레';
+      saveState();
+      render();
+    }
+
+    // Modal Controls
+    function openTossModal(ticketId) {
+      selectedTicketType = TICKET_TYPES.find(t => t.id === ticketId);
+      if (!selectedTicketType) return;
+      document.getElementById('input-depositor-name').value = currentUser.name;
+      document.getElementById('toss-modal-product').innerHTML = `
+        <span class="text-[11px] font-semibold text-violet-700 uppercase tracking-wider">${selectedTicketType.category === 'coupon' ? '1회 쿠폰' : '정기 수강권'}</span>
+        <h4 class="text-base font-bold text-slate-900 mt-0.5">${selectedTicketType.title}</h4>
+        <p class="text-xs text-slate-500 mt-1">${selectedTicketType.description}</p>
+        <div class="mt-3 pt-3 border-t border-slate-200 flex items-baseline justify-between">
+          <span class="text-xs text-slate-600 font-medium">입금 금액</span>
+          <span class="text-xl font-black text-slate-900 font-mono">${selectedTicketType.price.toLocaleString()}원</span>
+        </div>
+      `;
+      document.getElementById('toss-modal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeTossModal() {
+      document.getElementById('toss-modal').classList.add('hidden');
+    }
+
+    function openTossApp() {
+      if (!selectedTicketType) return;
+      const cleanAccount = CLUB_INFO.accountNumber.replace(/-/g, '');
+      const scheme = `supertoss://send?bank=${encodeURIComponent(CLUB_INFO.bankName)}&account=${cleanAccount}&amount=${selectedTicketType.price}`;
+      navigator.clipboard.writeText(`${CLUB_INFO.bankName} ${CLUB_INFO.accountNumber}`);
+      window.location.href = scheme;
+    }
+
+    function copyAccount() {
+      navigator.clipboard.writeText(`${CLUB_INFO.bankName} ${CLUB_INFO.accountNumber}`);
+      const btn = document.getElementById('copy-btn-text');
+      btn.innerHTML = `<i data-lucide="check" class="w-3 h-3 text-emerald-600"></i><span class="text-emerald-600">복사완료!</span>`;
+      lucide.createIcons();
+      setTimeout(() => {
+        btn.innerHTML = `<i data-lucide="copy" class="w-3 h-3"></i><span>계좌 복사</span>`;
+        lucide.createIcons();
+      }, 1500);
+    }
+
+    function submitPaymentRequest(e) {
+      e.preventDefault();
+      const depName = document.getElementById('input-depositor-name').value.trim();
+      if (!depName) return;
+
+      const req = {
+        id: 'pay-' + Date.now(),
+        ticketTitle: selectedTicketType.title,
+        amount: selectedTicketType.price,
+        ticketTypeId: selectedTicketType.id,
+        depositorName: depName,
+        userName: currentUser.name,
+        userPhone: currentUser.phone,
+        status: 'pending',
+        requestedAt: new Date().toISOString().replace('T', ' ').substring(0, 16)
+      };
+      paymentRequests.unshift(req);
+      saveState();
+      closeTossModal();
+      showToast('입금 완료 요청이 전송되었습니다! 운영진 확인 후 충전됩니다.');
+      render();
+    }
+
+    function openRefundModal(ticketId) {
+      selectedRefundTicket = userTickets.find(t => t.id === ticketId);
+      if (!selectedRefundTicket) return;
+      document.getElementById('refund-holder').value = currentUser.name;
+      document.getElementById('refund-modal-ticket-info').innerHTML = `
+        <div class="flex justify-between items-start">
+          <div>
+            <span class="text-[11px] font-semibold text-slate-500">환불 대상 수강권</span>
+            <h4 class="text-sm font-bold text-slate-900 mt-0.5">${selectedRefundTicket.title}</h4>
+          </div>
+          <div class="text-right">
+            <span class="text-base font-black font-mono text-violet-700">${selectedRefundTicket.remainingCount}회 남음</span>
+            <span class="text-xs text-slate-400 font-mono block">/${selectedRefundTicket.totalCount}회</span>
+          </div>
+        </div>
+      `;
+      document.getElementById('refund-modal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeRefundModal() {
+      document.getElementById('refund-modal').classList.add('hidden');
+    }
+
+    function submitRefundRequest(e) {
+      e.preventDefault();
+      const bank = document.getElementById('refund-bank').value;
+      const account = document.getElementById('refund-account').value.trim();
+      const holder = document.getElementById('refund-holder').value.trim();
+      const reason = document.getElementById('refund-reason').value.trim();
+      if (!account || !holder) return;
+
+      const req = {
+        id: 'ref-' + Date.now(),
+        ticketTitle: selectedRefundTicket.title,
+        amount: Math.floor(50000 / 4) * selectedRefundTicket.remainingCount,
+        userName: currentUser.name,
+        bankName: bank,
+        accountNumber: account,
+        accountHolder: holder,
+        reason: reason || '개인 사정',
+        status: 'requested',
+        requestedAt: new Date().toISOString().replace('T', ' ').substring(0, 16)
+      };
+      refundRequests.unshift(req);
+      saveState();
+      closeRefundModal();
+      showToast('환불 신청이 정상 접수되었습니다. 15일에 정산 입금됩니다.');
+      render();
+    }
+
+    // Admin Operations
+    function approvePayment(payId) {
+      const p = paymentRequests.find(r => r.id === payId);
+      if (!p) return;
+      p.status = 'approved';
+      const tType = TICKET_TYPES.find(t => t.id === p.ticketTypeId) || TICKET_TYPES[0];
+      userTickets.unshift({
+        id: 'ut-' + Date.now(),
+        title: p.ticketTitle,
+        remainingCount: tType.totalCount || 1,
+        totalCount: tType.totalCount || 1,
+        maxCancellations: tType.maxCancellations || 0,
+        cancellationCount: 0,
+        expiresAt: '2026-11-30',
+      });
+      saveState();
+      showToast('수강권이 회원 계정에 즉시 발급되었습니다.');
+      render();
+    }
+
+    function copyPhone(phone) {
+      navigator.clipboard.writeText(phone);
+      showToast('전화번호가 복사되었습니다 (스튜디오메이트 검색용)');
+    }
+
+    function completeRefund(refId) {
+      const r = refundRequests.find(q => q.id === refId);
+      if (!r) return;
+      r.status = 'completed';
+      saveState();
+      showToast('송금 완료 및 환불 종결 처리되었습니다.');
+      render();
+    }
+
+    // Main Render Loop
+    function render() {
+      // Header
+      const totalRemaining = userTickets.reduce((sum, t) => sum + t.remainingCount, 0);
+      const pendingCount = paymentRequests.filter(p => p.status === 'pending').length;
+      document.getElementById('header-user-area').innerHTML = `
+        <div class="text-right">
+          <p class="text-xs font-bold text-slate-800">${currentUser.name}</p>
+          <p class="text-[11px] text-violet-600 font-bold font-mono">잔여 ${totalRemaining}회</p>
+        </div>
+        <button type="button" onclick="switchRole('${currentUser.role === 'admin' ? 'member' : 'admin'}')" class="ml-1 p-1.5 rounded-lg bg-slate-100 hover:bg-violet-50 text-slate-600 hover:text-violet-700 transition-colors text-[11px] font-semibold flex items-center gap-1 border border-slate-200">
+          <i data-lucide="${currentUser.role === 'admin' ? 'user' : 'shield-check'}" class="w-3.5 h-3.5"></i>
+          <span>${currentUser.role === 'admin' ? '회원전환' : '운영진전환'}</span>
+        </button>
+      `;
+
+      // Admin badge
+      const badge = document.getElementById('nav-admin-badge');
+      if (pendingCount > 0) {
+        badge.innerText = pendingCount;
+        badge.classList.remove('hidden');
+        badge.classList.add('flex');
+      } else {
+        badge.classList.add('hidden');
+        badge.classList.remove('flex');
+      }
+
+      // TAB 1: Tickets
+      if (currentTab === 'tickets') {
+        const filtered = TICKET_TYPES.filter(t => {
+          if (ticketFilter === 'coupon') return t.category === 'coupon';
+          if (ticketFilter === 'full') return t.title.includes('Full');
+          if (ticketFilter === 'half') return t.title.includes('Half');
+          return true;
+        });
+
+        document.getElementById('tab-tickets').innerHTML = `
+          <!-- Notice Banner -->
+          <div class="bg-gradient-to-br from-violet-50 via-purple-50 to-slate-50 border border-violet-200/90 rounded-3xl p-4 text-violet-950 text-xs shadow-2xs space-y-2">
+            <div class="flex items-center gap-2">
+              <div class="w-6 h-6 rounded-xl bg-violet-600 text-white flex items-center justify-center shrink-0">
+                <i data-lucide="smartphone" class="w-3.5 h-3.5"></i>
+              </div>
+              <strong class="text-violet-900 font-bold text-sm">수강권 & 1회 쿠폰 간편 신청 포털</strong>
+            </div>
+            <p class="text-[11px] text-violet-800/90 leading-relaxed pl-8">
+              모자이크 설문조사 대신 여기서 간편하게 <strong>수강권/1회권 신청 및 토스 송금</strong>을 진행하시면, 운영진 확인 즉시 <strong>스튜디오메이트</strong> 앱에 수강권이 충전됩니다!
+            </p>
+          </div>
+
+          <!-- Product Catalog -->
+          <div>
+            <div class="flex items-center justify-between mb-2 px-0.5">
+              <h2 class="text-sm font-bold text-slate-800 flex items-center gap-1.5">
+                <i data-lucide="plus-circle" class="w-4 h-4 text-violet-600"></i>
+                수강권 & 1회 쿠폰 신청
+              </h2>
+              <span class="text-[11px] text-violet-600 font-bold">토스 간편송금</span>
+            </div>
+
+            <!-- Filter Pills -->
+            <div class="flex gap-1.5 mb-2.5 overflow-x-auto no-scrollbar">
+              ${[
+                { id: 'all', label: '전체 상품' },
+                { id: 'coupon', label: '1회 쿠폰' },
+                { id: 'full', label: 'Full 클래스' },
+                { id: 'half', label: 'Half / 런치' },
+              ].map(cat => `
+                <button type="button" onclick="ticketFilter='${cat.id}'; render();" class="px-3 py-1.5 rounded-2xl text-xs font-bold whitespace-nowrap transition-all ${ticketFilter === cat.id ? 'bg-violet-600 text-white shadow-xs' : 'bg-white text-slate-600 border border-slate-200/80'}">
+                  ${cat.label}
+                </button>
+              `).join('')}
+            </div>
+
+            <div class="grid gap-2.5">
+              ${filtered.map(type => {
+                const isCoupon = type.category === 'coupon';
+                const isFull = type.title.includes('Full');
+                return `
+                  <button type="button" onclick="openTossModal('${type.id}')" class="w-full text-left bg-white rounded-3xl border border-slate-200/90 hover:border-violet-300 p-4 shadow-2xs transition-all flex items-center justify-between group">
+                    <div class="space-y-1">
+                      <div class="flex items-center gap-1.5">
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${isCoupon ? 'bg-rose-50 text-rose-700 border border-rose-200' : isFull ? 'bg-violet-100 text-violet-800 border border-violet-200' : 'bg-emerald-50 text-emerald-800 border border-emerald-200'}">
+                          ${isCoupon ? '1회 쿠폰 (환불불가)' : '정기 수강권'}
+                        </span>
+                        <h3 class="font-bold text-slate-900 text-sm group-hover:text-violet-700 transition-colors">${type.title}</h3>
+                      </div>
+                      <p class="text-xs text-slate-500 leading-relaxed">${type.description}</p>
+                      <p class="text-[11px] text-slate-400">유효기간: 발급일로부터 ${type.validDays}일 (1개월)</p>
+                    </div>
+                    <div class="text-right shrink-0 pl-3">
+                      <div class="text-base font-black text-slate-900 font-mono">${type.price.toLocaleString()}원</div>
+                      <span class="inline-block mt-1 text-[11px] font-bold text-violet-700 bg-violet-50 group-hover:bg-violet-600 group-hover:text-white px-3 py-1 rounded-xl transition-all border border-violet-200/70">신청하기 →</span>
+                    </div>
+                  </button>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- My Active Passes -->
+          <div>
+            <div class="flex items-center justify-between mb-2.5 px-0.5">
+              <h2 class="text-sm font-bold text-slate-800 flex items-center gap-1.5">
+                <i data-lucide="ticket" class="w-4 h-4 text-violet-600"></i>
+                내 보유 수강권 현황
+              </h2>
+              <span class="text-[11px] text-slate-400">총 ${userTickets.length}장 보유</span>
+            </div>
+
+            <div class="space-y-2.5">
+              ${userTickets.map(ticket => {
+                const isCoupon = ticket.title.includes('1회');
+                return `
+                  <div class="bg-white rounded-3xl border border-violet-200/90 p-4 shadow-2xs">
+                    <div class="flex justify-between items-start">
+                      <div>
+                        <span class="text-[10px] font-bold text-violet-800 bg-violet-50 border border-violet-200 px-2 py-0.5 rounded-full">${isCoupon ? '1회 쿠폰' : '정기 수강권'}</span>
+                        <h3 class="font-bold text-slate-900 text-sm mt-1">${ticket.title}</h3>
+                        <p class="text-[11px] text-slate-400 mt-1">유효기간: ${ticket.expiresAt}까지 (1개월)</p>
+                      </div>
+                      <div class="text-right">
+                        <div class="text-2xl font-black font-mono text-violet-700">${ticket.remainingCount}<span class="text-xs font-normal text-slate-400">/${ticket.totalCount}회</span></div>
+                      </div>
+                    </div>
+                    <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
+                      ${isCoupon ? `
+                        <span class="text-slate-500 font-medium">유효기간 내 자유 수강</span>
+                        <span class="text-rose-500 font-semibold bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200/60 text-[10px]">※ 1회 쿠폰 환불불가</span>
+                      ` : `
+                        <span class="text-slate-600 font-medium">취소·보강: ${ticket.maxCancellations}회 가능</span>
+                        <button type="button" onclick="openRefundModal('${ticket.id}')" class="text-slate-400 hover:text-rose-600 font-semibold flex items-center gap-1 transition-colors">
+                          <i data-lucide="rotate-ccw" class="w-3 h-3"></i><span>15일 환불 신청</span>
+                        </button>
+                      `}
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      // TAB 2: Schedule
+      if (currentTab === 'schedule') {
+        const selectedWeek = WEEKS.find(w => w.id === selectedWeekId) || WEEKS[0];
+        const dayClasses = classes.filter(c => c.dayOfWeek === selectedDay);
+
+        document.getElementById('tab-schedule').innerHTML = `
+          <!-- Top Pass Banner -->
+          <div class="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 rounded-3xl p-4.5 text-white shadow-md flex items-center justify-between">
+            <div>
+              <span class="text-[11px] font-medium text-purple-100 flex items-center gap-1.5">
+                <i data-lucide="ticket" class="w-3.5 h-3.5 text-purple-200"></i>
+                내 보유 수강권 잔여 횟수
+              </span>
+              <h2 class="text-2xl font-black mt-0.5 tracking-tight font-mono">${totalRemaining}<span class="text-xs font-normal text-purple-100 ml-1">회 이용 가능</span></h2>
+            </div>
+            <button type="button" onclick="setTab('tickets')" class="px-3.5 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white font-semibold text-xs border border-white/25">
+              쿠폰 충전 →
+            </button>
+          </div>
+
+          <!-- Week Selector -->
+          <div class="bg-white rounded-2xl border border-violet-100/90 p-3 shadow-2xs space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-bold text-slate-700 flex items-center gap-1.5"><i data-lucide="calendar" class="w-3.5 h-3.5 text-violet-600"></i>수강 주차 / 월별 일정</span>
+              <span class="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">${selectedWeek.badge}</span>
+            </div>
+            <div class="flex gap-1.5 overflow-x-auto no-scrollbar">
+              ${WEEKS.map(w => `
+                <button type="button" onclick="selectedWeekId='${w.id}'; render();" class="px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap ${selectedWeekId === w.id ? 'bg-violet-100 text-violet-800 border border-violet-300' : 'bg-slate-50 text-slate-600 border border-slate-200/80'}">
+                  ${w.label.split('(')[0]}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Day Selector -->
+          <div class="flex gap-1.5 overflow-x-auto pb-1 no-scrollbar">
+            ${['mon', 'tue', 'wed', 'thu', 'fri'].map(dKey => {
+              const dLabel = { mon: '월', tue: '화', wed: '수', thu: '목', fri: '금' }[dKey];
+              const dateStr = selectedWeek.dates[dKey];
+              const isSelected = selectedDay === dKey;
+              return `
+                <button type="button" onclick="selectedDay='${dKey}'; render();" class="flex-1 min-w-[65px] py-2 px-1 rounded-2xl text-xs font-bold whitespace-nowrap flex flex-col items-center transition-all ${isSelected ? 'bg-violet-600 text-white shadow-xs' : 'bg-white text-slate-600 border border-slate-200/80'}">
+                  <span class="text-[10px] font-mono font-normal ${isSelected ? 'text-purple-200' : 'text-slate-400'}">${dateStr}</span>
+                  <span class="text-xs font-bold mt-0.5">${dLabel}요일</span>
+                </button>
+              `;
+            }).join('')}
+          </div>
+
+          <!-- Class List -->
+          <div class="space-y-3">
+            ${dayClasses.map(cls => {
+              const isPas = cls.id === 'class-fri-pasdedeux';
+              return `
+                <div class="bg-white rounded-3xl border ${isPas ? 'border-purple-300 bg-purple-50/20' : 'border-slate-200/90'} p-4 shadow-2xs">
+                  <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-100">
+                    <div class="flex items-center gap-2">
+                      <span class="w-1 h-3.5 rounded-full bg-violet-600"></span>
+                      <span class="font-extrabold text-sm text-slate-800 font-mono tracking-tight">${cls.time.split(' ')[0]} ${cls.time.split(' ')[1]} ${cls.time.split(' ')[2]}</span>
+                    </div>
+                    ${isPas ? `
+                      <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-800 border border-purple-200">Full 파드되 (정원 5명)</span>
+                    ` : cls.time.includes('Half') || cls.time.includes('런치') ? `
+                      <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Half 40분</span>
+                    ` : `
+                      <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-violet-50 text-violet-700 border border-violet-200">Full 80분</span>
+                    `}
+                  </div>
+                  <h3 class="font-bold text-slate-900 text-base tracking-tight">${cls.title}</h3>
+                  <p class="text-xs text-slate-500 mt-1">${cls.instructor} • ${cls.level} (정원 ${cls.capacity}명)</p>
+                  <p class="text-xs text-slate-500 mt-2 bg-slate-50/70 p-2.5 rounded-2xl">${cls.description}</p>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `;
+      }
+
+      // TAB 4: Admin Console
+      if (currentTab === 'admin') {
+        const pending = paymentRequests.filter(p => p.status === 'pending');
+        const pendingRef = refundRequests.filter(r => r.status === 'requested');
+
+        document.getElementById('tab-admin').innerHTML = `
+          <div class="bg-gradient-to-r from-violet-700 via-purple-700 to-indigo-800 rounded-3xl p-4.5 text-white shadow-md space-y-1">
+            <h2 class="font-bold text-base">동호회 운영진 콘솔</h2>
+            <p class="text-[11px] text-purple-200">입금확인 · 스튜디오메이트 충전 · 15일환불</p>
+          </div>
+
+          <!-- Pending Payments Queue -->
+          <div class="space-y-2.5">
+            <div class="flex items-center justify-between">
+              <h3 class="text-xs font-bold text-slate-800 flex items-center gap-1.5"><i data-lucide="dollar-sign" class="w-4 h-4 text-violet-600"></i>입금 확인 대기열</h3>
+              <span class="text-[11px] text-slate-500">대기 ${pending.length}건</span>
+            </div>
+
+            ${pending.length === 0 ? `
+              <div class="bg-white rounded-3xl border border-slate-200 p-8 text-center text-slate-400 text-xs">
+                <i data-lucide="check-circle-2" class="w-8 h-8 text-emerald-500 mx-auto mb-2"></i>
+                처리 대기 중인 입금 내역이 없습니다.
+              </div>
+            ` : pending.map(p => `
+              <div class="bg-white rounded-3xl border border-amber-200 p-4 shadow-2xs space-y-3">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <span class="text-[10px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-full">입금 확인 대기</span>
+                    <h4 class="font-bold text-slate-900 text-sm mt-1">${p.ticketTitle}</h4>
+                    <p class="text-xs text-slate-700 mt-0.5">신청: <strong>${p.userName}</strong> (${p.userPhone})</p>
+                    <p class="text-xs text-violet-700 font-semibold mt-0.5">입금자명: <strong>[${p.depositorName}]</strong> • ${p.amount.toLocaleString()}원</p>
+                  </div>
+                  <button type="button" onclick="copyPhone('${p.userPhone}')" class="text-[11px] bg-slate-100 hover:bg-violet-50 text-slate-700 font-semibold px-2.5 py-1.5 rounded-xl border border-slate-200 flex items-center gap-1 shrink-0">
+                    <i data-lucide="copy" class="w-3 h-3"></i><span>번호 복사</span>
+                  </button>
+                </div>
+                <button type="button" onclick="approvePayment('${p.id}')" class="w-full py-2.5 rounded-2xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-xs flex items-center justify-center gap-1 shadow-xs">
+                  <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i>입금확인 (수강권 즉시 발급)
+                </button>
+              </div>
+            `).join('')}
+          </div>
+
+          <!-- Pending Refunds -->
+          <div class="space-y-2.5 pt-3">
+            <h3 class="text-xs font-bold text-slate-800 flex items-center gap-1.5"><i data-lucide="calendar" class="w-4 h-4 text-violet-600"></i>15일 환불 대기열 (${pendingRef.length}건)</h3>
+            ${pendingRef.length === 0 ? `
+              <div class="bg-white rounded-3xl border border-slate-200 p-6 text-center text-slate-400 text-xs">현재 대기 중인 환불 요청이 없습니다.</div>
+            ` : pendingRef.map(r => `
+              <div class="bg-white rounded-3xl border border-slate-200 p-4 shadow-2xs space-y-2.5">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <span class="text-[10px] bg-rose-100 text-rose-700 font-bold px-2 py-0.5 rounded-full">15일 환불 대기</span>
+                    <h4 class="font-bold text-slate-900 text-sm mt-1">${r.ticketTitle}</h4>
+                    <p class="text-xs text-slate-600 mt-0.5">요청자: ${r.userName} • 약 ${r.amount.toLocaleString()}원</p>
+                  </div>
+                </div>
+                <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 text-xs space-y-1">
+                  <div class="font-mono font-bold text-slate-800">${r.bankName} ${r.accountNumber} (${r.accountHolder})</div>
+                  <div class="text-[11px] text-slate-500">사유: ${r.reason}</div>
+                </div>
+                <button type="button" onclick="completeRefund('${r.id}')" class="w-full py-2.5 rounded-2xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-xs">
+                  송금 완료 및 환불 종결
+                </button>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+
+      // TAB 3: Notices
+      if (currentTab === 'notices') {
+        document.getElementById('tab-notices').innerHTML = `
+          <h2 class="text-sm font-bold text-slate-800 flex items-center gap-1.5 px-0.5"><i data-lucide="bell" class="w-4 h-4 text-violet-600"></i>공지사항 & 수강안내</h2>
+          <div class="space-y-2.5">
+            <div class="bg-white rounded-3xl border border-violet-300 p-4 shadow-2xs space-y-1.5">
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500 text-white">필독</span>
+              <h3 class="font-bold text-slate-900 text-sm">🩰 아다지오 발레 수강권/1회 쿠폰 간편 신청 포털 안내</h3>
+              <p class="text-xs text-slate-600 leading-relaxed pt-1">
+                사내 모자이크 설문조사 대신, 본 포털에서 원하는 수강권/1회권을 선택 후 토스로 송금해주시면 운영진 확인 즉시 스튜디오메이트 앱에 충전됩니다.<br><br>
+                • 1회 쿠폰 (Full 15,000원 / Half 10,000원): 신청 후 환불 불가 (1개월간 유효)<br>
+                • Full 정기권 (4회 50,000원) / Half 정기권 (4회 25,000원): 15일 일괄 환불 신청 가능
+              </p>
+            </div>
+            <div class="bg-white rounded-3xl border border-slate-200 p-4 shadow-2xs space-y-1.5">
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-violet-50 text-violet-700 border border-violet-200">수업</span>
+              <h3 class="font-bold text-slate-900 text-sm">👑 금요일 홍성우 쌤 파드되(Pas de deux) 안내</h3>
+              <p class="text-xs text-slate-600 leading-relaxed pt-1">
+                금요일 20:20 파드되 수업은 80분 Full 클래스이며 파트너링 특성상 [소수정예 5명 정원]으로 운영됩니다.
+              </p>
+            </div>
+          </div>
+        `;
+      }
+
+      // TAB 5: Profile
+      if (currentTab === 'profile') {
+        document.getElementById('tab-profile').innerHTML = `
+          <div class="bg-white rounded-3xl border border-slate-200/90 p-5 shadow-2xs">
+            <div class="flex items-center gap-3.5">
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-violet-500 to-purple-500 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+                ${currentUser.name.substring(0, 1)}
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center gap-2">
+                  <h2 class="text-base font-bold text-slate-900">${currentUser.name}</h2>
+                  <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-violet-50 text-violet-700 border border-violet-200">${currentUser.role === 'admin' ? '운영진' : '정회원'}</span>
+                </div>
+                <p class="text-xs text-slate-500 mt-0.5">${currentUser.department}</p>
+              </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+              <span class="text-slate-500 font-medium">체험 모드 전환</span>
+              <div class="flex gap-1.5">
+                <button type="button" onclick="switchRole('member')" class="px-3 py-1.5 rounded-xl font-bold text-[11px] ${currentUser.role === 'member' ? 'bg-violet-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600'}">일반회원(김발레)</button>
+                <button type="button" onclick="switchRole('admin')" class="px-3 py-1.5 rounded-xl font-bold text-[11px] ${currentUser.role === 'admin' ? 'bg-violet-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600'}">운영진(최운영)</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-slate-100/70 rounded-3xl border border-slate-200/80 p-4 text-xs space-y-1.5">
+            <div class="font-bold text-slate-700 flex items-center gap-1.5"><i data-lucide="credit-card" class="w-4 h-4 text-violet-600"></i>동호회 공식 계좌</div>
+            <p class="font-mono font-bold text-slate-900 text-sm">${CLUB_INFO.bankName} ${CLUB_INFO.accountNumber}</p>
+            <p class="text-slate-500 text-[11px]">예금주: ${CLUB_INFO.accountHolder} • 환불 정산일: ${CLUB_INFO.refundDayText}</p>
+          </div>
+
+          <div class="pt-2 text-center">
+            <button type="button" onclick="localStorage.clear(); location.reload();" class="text-slate-400 hover:text-rose-500 text-[11px] flex items-center justify-center gap-1 mx-auto">
+              <i data-lucide="rotate-ccw" class="w-3 h-3"></i><span>테스트 데이터 초기화</span>
+            </button>
+          </div>
+        `;
+      }
+
+      lucide.createIcons();
+    }
+
+    // Initialize
+    window.addEventListener('DOMContentLoaded', () => {
+      render();
+    });
+  </script>
+</body>
+</html>
