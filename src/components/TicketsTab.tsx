@@ -13,12 +13,15 @@ import {
   RotateCcw,
   CheckCircle2,
   HelpCircle,
-  ChevronRight,
+  AlertCircle,
+  ShieldCheck,
+  Smartphone,
 } from 'lucide-react';
 
 export default function TicketsTab() {
   const { userTickets, ticketTypes, currentUser, paymentRequests } = useApp();
 
+  const [filterCategory, setFilterCategory] = useState<'all' | 'coupon' | 'full' | 'half'>('all');
   const [selectedTicketType, setSelectedTicketType] = useState<TicketType | null>(null);
   const [refundTicket, setRefundTicket] = useState<UserTicket | null>(null);
   const [successToast, setSuccessToast] = useState<string | null>(null);
@@ -29,48 +32,82 @@ export default function TicketsTab() {
   // User's pending payment requests
   const myPayments = paymentRequests.filter((p) => p.userId === currentUser.id);
 
+  // Filtered ticket types
+  const filteredTicketTypes = ticketTypes.filter((t) => {
+    if (filterCategory === 'coupon') return t.category === 'coupon';
+    if (filterCategory === 'full') return t.title.includes('Full');
+    if (filterCategory === 'half') return t.title.includes('Half');
+    return true;
+  });
+
   return (
     <div className="space-y-4 pb-20">
       {/* Toast Notification */}
       {successToast && (
-        <div className="p-3 bg-emerald-600 text-white text-xs rounded-2xl shadow-lg flex items-center gap-2 animate-in slide-in-from-top duration-300">
+        <div className="p-3.5 bg-emerald-600 text-white text-xs rounded-2xl shadow-lg flex items-center gap-2 animate-in slide-in-from-top duration-300">
           <CheckCircle2 className="w-4 h-4 shrink-0" />
           <span className="font-medium">{successToast}</span>
         </div>
       )}
 
-      {/* StudioMate Hybrid Notice Banner: Soft Lavender */}
-      <div className="bg-violet-50/80 border border-violet-200/90 rounded-3xl p-4 flex items-start gap-3 text-violet-950 text-xs shadow-2xs">
-        <div className="w-7 h-7 rounded-xl bg-violet-100 text-violet-600 flex items-center justify-center shrink-0 mt-0.5">
-          <Sparkles className="w-4 h-4" />
-        </div>
-        <div className="leading-relaxed">
-          <strong className="text-violet-900 font-bold block text-sm">
-            수강권 · 1회 쿠폰 간편 신청 포털
+      {/* StudioMate Hybrid Operational Scope Banner */}
+      <div className="bg-gradient-to-br from-violet-50 via-purple-50 to-slate-50 border border-violet-200/90 rounded-3xl p-4 text-violet-950 text-xs shadow-2xs space-y-2">
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 rounded-xl bg-violet-600 text-white flex items-center justify-center shrink-0">
+            <Smartphone className="w-3.5 h-3.5" />
+          </div>
+          <strong className="text-violet-900 font-bold text-sm">
+            수강권 & 1회 쿠폰 간편 신청 포털
           </strong>
-          <p className="text-[11px] text-violet-700/90 mt-0.5">
-            원하시는 쿠폰/정기권을 선택 후 토스로 송금해주시면, 운영진 확인 즉시 <strong>스튜디오메이트(StudioMate)</strong> 앱에 수강권이 자동 충전됩니다.
-          </p>
+        </div>
+        <p className="text-[11px] text-violet-800/90 leading-relaxed pl-8">
+          모자이크 설문조사 대신 여기서 간편하게 <strong>수강권/1회권 신청 및 토스 송금</strong>을 진행하시면, 운영진 확인 즉시 <strong>스튜디오메이트(StudioMate)</strong> 앱에 수강권이 충전됩니다!
+        </p>
+        <div className="pl-8 flex items-center gap-2 text-[10px] text-violet-600 font-semibold pt-0.5">
+          <span>• 1회 쿠폰: 환불 불가 (유효기간 1개월)</span>
+          <span>• 정기권: 15일 일괄 환불 가능</span>
         </div>
       </div>
 
       {/* 1. Purchase Passes / 1-Session Coupons */}
       <div>
-        <div className="flex items-center justify-between mb-2.5 px-0.5">
+        <div className="flex items-center justify-between mb-2 px-0.5">
           <h2 className="text-sm font-bold text-slate-800 flex items-center gap-1.5">
             <PlusCircle className="w-4 h-4 text-violet-600" />
             수강권 & 1회 쿠폰 신청
           </h2>
-          <span className="text-[11px] text-violet-600 font-bold flex items-center gap-1">
-            토스 간편송금 지원
+          <span className="text-[11px] text-violet-600 font-bold">
+            토스 간편송금
           </span>
         </div>
 
+        {/* Category Pills */}
+        <div className="flex gap-1.5 mb-2.5 overflow-x-auto no-scrollbar">
+          {[
+            { id: 'all', label: '전체 상품' },
+            { id: 'coupon', label: '1회 쿠폰' },
+            { id: 'full', label: 'Full 클래스' },
+            { id: 'half', label: 'Half / 런치' },
+          ].map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setFilterCategory(cat.id as any)}
+              className={`px-3 py-1.5 rounded-2xl text-xs font-bold whitespace-nowrap transition-all ${
+                filterCategory === cat.id
+                  ? 'bg-violet-600 text-white shadow-xs'
+                  : 'bg-white text-slate-600 border border-slate-200/80 hover:bg-violet-50/40'
+              }`}
+            >
+              {cat.label}
+            </button>
+          ))}
+        </div>
+
         <div className="grid gap-2.5">
-          {ticketTypes.map((type) => {
+          {filteredTicketTypes.map((type) => {
             const isCoupon = type.category === 'coupon';
-            const isFullCoupon = type.id === 'ticket-coupon-full';
-            const isHalfCoupon = type.id === 'ticket-coupon-half';
+            const isFull = type.title.includes('Full');
+            const isHalf = type.title.includes('Half');
 
             return (
               <div
@@ -82,14 +119,14 @@ export default function TicketsTab() {
                   <div className="flex items-center gap-1.5">
                     <span
                       className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                        isFullCoupon
+                        isCoupon
+                          ? 'bg-rose-50 text-rose-700 border border-rose-200'
+                          : isFull
                           ? 'bg-violet-100 text-violet-800 border border-violet-200'
-                          : isHalfCoupon
-                          ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-                          : 'bg-purple-100 text-purple-800 border border-purple-200'
+                          : 'bg-emerald-50 text-emerald-800 border border-emerald-200'
                       }`}
                     >
-                      {type.category === 'coupon' ? '1회 쿠폰' : '정기 수강권'}
+                      {isCoupon ? '1회 쿠폰 (환불불가)' : '정기 수강권'}
                     </span>
                     <h3 className="font-bold text-slate-900 text-sm group-hover:text-violet-700 transition-colors">
                       {type.title}
@@ -97,7 +134,7 @@ export default function TicketsTab() {
                   </div>
                   <p className="text-xs text-slate-500 leading-relaxed">{type.description}</p>
                   <p className="text-[11px] text-slate-400">
-                    유효기간: 발급일로부터 {type.validDays}일
+                    유효기간: 발급일로부터 {type.validDays}일 (1개월)
                   </p>
                 </div>
 
@@ -132,7 +169,7 @@ export default function TicketsTab() {
             <Ticket className="w-8 h-8 text-violet-300 mx-auto" />
             <p className="text-xs text-slate-600 font-semibold">현재 등록된 수강권이 없습니다.</p>
             <p className="text-[11px] text-slate-400">
-              위 상품 목록에서 원하시는 쿠폰을 신청해주세요.
+              위 상품 목록에서 원하시는 쿠폰/수강권을 신청해주세요.
             </p>
           </div>
         ) : (
@@ -140,6 +177,7 @@ export default function TicketsTab() {
             {myTickets.map((ticket) => {
               const isActive = ticket.remainingCount > 0;
               const percent = Math.round((ticket.remainingCount / ticket.totalCount) * 100);
+              const isCoupon = ticket.title.includes('1회') || ticket.totalCount === 1;
 
               return (
                 <div
@@ -151,12 +189,12 @@ export default function TicketsTab() {
                   <div className="flex justify-between items-start">
                     <div>
                       <span className="text-[10px] font-bold text-violet-800 bg-violet-50 border border-violet-200 px-2 py-0.5 rounded-full">
-                        {ticket.title.includes('1회') ? '1회 쿠폰' : '정기권'}
+                        {isCoupon ? '1회 쿠폰' : '정기 수강권'}
                       </span>
                       <h3 className="font-bold text-slate-900 text-sm mt-1">{ticket.title}</h3>
                       <div className="flex items-center gap-1.5 text-[11px] text-slate-400 mt-1">
                         <Clock className="w-3 h-3 text-slate-400" />
-                        <span>유효기간: {ticket.expiresAt}까지</span>
+                        <span>유효기간: {ticket.expiresAt}까지 (1개월)</span>
                       </div>
                     </div>
 
@@ -178,31 +216,44 @@ export default function TicketsTab() {
                     </div>
                   </div>
 
-                  {/* Footer Action: Cancellation allowance & Refund Button */}
+                  {/* Footer Action: 1회 쿠폰은 환불불가 안내 / 정기권은 취소가능횟수 및 15일환불 */}
                   {isActive && (
                     <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
-                      <div className="flex items-center gap-1.5 text-slate-500">
-                        <span className="font-medium">취소·보강:</span>
-                        <span
-                          className={`font-bold ${
-                            ticket.cancellationCount >= ticket.maxCancellations
-                              ? 'text-rose-600'
-                              : 'text-violet-700'
-                          }`}
-                        >
-                          {ticket.maxCancellations - ticket.cancellationCount}회 가능
-                        </span>
-                        <span className="text-[10px] text-slate-400 font-mono">
-                          (최대 {ticket.maxCancellations}회)
-                        </span>
-                      </div>
-                      <button
-                        onClick={() => setRefundTicket(ticket)}
-                        className="text-slate-400 hover:text-rose-600 font-semibold flex items-center gap-1 transition-colors"
-                      >
-                        <RotateCcw className="w-3 h-3" />
-                        <span>환불 신청</span>
-                      </button>
+                      {isCoupon ? (
+                        <>
+                          <span className="text-slate-500 font-medium">
+                            유효기간 내 자유 수강
+                          </span>
+                          <span className="text-rose-500 font-semibold bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200/60 text-[10px]">
+                            ※ 1회 쿠폰은 신청 후 환불 불가
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <div className="flex items-center gap-1.5 text-slate-500">
+                            <span className="font-medium">취소·보강:</span>
+                            <span
+                              className={`font-bold ${
+                                ticket.cancellationCount >= ticket.maxCancellations
+                                  ? 'text-rose-600'
+                                  : 'text-violet-700'
+                              }`}
+                            >
+                              {ticket.maxCancellations - ticket.cancellationCount}회 가능
+                            </span>
+                            <span className="text-[10px] text-slate-400 font-mono">
+                              (최대 {ticket.maxCancellations}회)
+                            </span>
+                          </div>
+                          <button
+                            onClick={() => setRefundTicket(ticket)}
+                            className="text-slate-400 hover:text-rose-600 font-semibold flex items-center gap-1 transition-colors"
+                          >
+                            <RotateCcw className="w-3 h-3" />
+                            <span>15일 환불 신청</span>
+                          </button>
+                        </>
+                      )}
                     </div>
                   )}
                 </div>
@@ -257,9 +308,11 @@ export default function TicketsTab() {
           <HelpCircle className="w-3.5 h-3.5 text-violet-600" />
           이용 규정 안내
         </div>
-        <p className="leading-relaxed">• <strong>1회 쿠폰(Full 80분)</strong>: 정규 Full 수업 및 금요 파드되 클래스 예약 시 사용</p>
-        <p className="leading-relaxed">• <strong>1회 쿠폰(Half 40분)</strong>: 런치 스트레칭, 포인트 입문, 월요 입문반 예약 시 사용</p>
-        <p className="leading-relaxed">• 환불 신청 건은 동호회 정산일에 맞춰 <strong>매월 15일</strong>에 일괄 입금됩니다.</p>
+        <p className="leading-relaxed">• <strong>1회 쿠폰(Full 80분 - 15,000원)</strong>: 80분 정규 수업 및 금요 파드되 클래스 수강용 (신청 후 환불 불가 / 1개월 유효)</p>
+        <p className="leading-relaxed">• <strong>1회 쿠폰(Half 40분 - 10,000원)</strong>: 40분 런치 스트레칭, 포인트 입문, 월요 입문반 수강용 (신청 후 환불 불가 / 1개월 유효)</p>
+        <p className="leading-relaxed">• <strong>Full 정기 수강권 (4회 50,000원 / 8회 100,000원)</strong>: 80분 정규 및 파드되 수업용</p>
+        <p className="leading-relaxed">• <strong>Half 정기 수강권 (4회 25,000원 / 8회 50,000원)</strong>: 40분 런치 스트레칭 및 Half 수업용</p>
+        <p className="leading-relaxed">• 정기 수강권 중도 환불 신청 건은 동호회 정산일에 맞춰 <strong>매월 15일</strong>에 일괄 입금됩니다.</p>
       </div>
 
       {/* Modals */}

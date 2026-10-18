@@ -475,7 +475,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (!ticket) return { success: false, message: '수강권을 찾을 수 없습니다.' };
 
     const tType = ticketTypes.find((t) => t.id === ticket.ticketTypeId);
-    const unitPrice = tType ? Math.floor(tType.price / tType.totalCount) : 15000;
+    if (tType?.category === 'coupon' || ticket.title.includes('1회')) {
+      return {
+        success: false,
+        message: '동호회 회칙상 1회 쿠폰은 구매 후 환불이 불가합니다. (발급일로부터 30일간 유효)',
+      };
+    }
+
+    const unitPrice = tType ? Math.floor(tType.price / tType.totalCount) : 12500;
     const estRefundAmount = unitPrice * ticket.remainingCount;
 
     const newRefund: RefundRequest = {
