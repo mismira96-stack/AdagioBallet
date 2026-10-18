@@ -90,6 +90,7 @@ export default function TicketsTab() {
             { id: 'half', label: 'Half / 런치' },
           ].map((cat) => (
             <button
+              type="button"
               key={cat.id}
               onClick={() => setFilterCategory(cat.id as any)}
               className={`px-3 py-1.5 rounded-2xl text-xs font-bold whitespace-nowrap transition-all ${
@@ -110,10 +111,11 @@ export default function TicketsTab() {
             const isHalf = type.title.includes('Half');
 
             return (
-              <div
+              <button
+                type="button"
                 key={type.id}
                 onClick={() => setSelectedTicketType(type)}
-                className="bg-white rounded-3xl border border-slate-200/90 hover:border-violet-300 p-4 shadow-2xs transition-all cursor-pointer hover:shadow-xs active:scale-[0.99] flex items-center justify-between group"
+                className="w-full text-left bg-white rounded-3xl border border-slate-200/90 hover:border-violet-300 p-4 shadow-2xs transition-all cursor-pointer hover:shadow-xs active:scale-[0.99] flex items-center justify-between group touch-manipulation"
               >
                 <div className="space-y-1">
                   <div className="flex items-center gap-1.5">
@@ -146,7 +148,7 @@ export default function TicketsTab() {
                     신청하기 →
                   </span>
                 </div>
-              </div>
+              </button>
             );
           })}
         </div>

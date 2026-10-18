@@ -54,9 +54,10 @@ export default function Navigation({ currentTab, onChangeTab }: NavigationProps)
           const isActive = currentTab === item.id;
           return (
             <button
+              type="button"
               key={item.id}
               onClick={() => onChangeTab(item.id)}
-              className={`relative flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all duration-200 ${
+              className={`relative flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all duration-200 touch-manipulation cursor-pointer ${
                 isActive
                   ? 'text-violet-700 font-bold scale-105'
                   : 'text-slate-400 hover:text-slate-600 font-medium'

@@ -197,13 +197,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // Save to localStorage whenever state changes
   useEffect(() => {
     if (!isLoaded) return;
-    localStorage.setItem('adagio_classes', JSON.stringify(classes));
-    localStorage.setItem('adagio_tickets', JSON.stringify(userTickets));
-    localStorage.setItem('adagio_bookings', JSON.stringify(bookings));
-    localStorage.setItem('adagio_payments', JSON.stringify(paymentRequests));
-    localStorage.setItem('adagio_refunds', JSON.stringify(refundRequests));
-    localStorage.setItem('adagio_notices', JSON.stringify(notices));
-    localStorage.setItem('adagio_user', JSON.stringify(currentUser));
+    try {
+      localStorage.setItem('adagio_classes', JSON.stringify(classes));
+      localStorage.setItem('adagio_tickets', JSON.stringify(userTickets));
+      localStorage.setItem('adagio_bookings', JSON.stringify(bookings));
+      localStorage.setItem('adagio_payments', JSON.stringify(paymentRequests));
+      localStorage.setItem('adagio_refunds', JSON.stringify(refundRequests));
+      localStorage.setItem('adagio_notices', JSON.stringify(notices));
+      localStorage.setItem('adagio_user', JSON.stringify(currentUser));
+    } catch (e) {
+      console.warn('LocalStorage save skipped or restricted:', e);
+    }
   }, [classes, userTickets, bookings, paymentRequests, refundRequests, notices, currentUser, isLoaded]);
 
   // Role switch (for testing member vs admin view)

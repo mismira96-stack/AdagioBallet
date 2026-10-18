@@ -47,9 +47,10 @@ export default function Header() {
                 </p>
               </div>
               <button
+                type="button"
                 onClick={() => switchUserRole('admin')}
                 title="운영진 모드로 전환"
-                className="ml-1 p-1.5 rounded-lg bg-slate-100 hover:bg-violet-50 text-slate-600 hover:text-violet-700 transition-colors text-[11px] font-semibold flex items-center gap-1 border border-slate-200"
+                className="ml-1 p-1.5 rounded-lg bg-slate-100 hover:bg-violet-50 text-slate-600 hover:text-violet-700 transition-colors text-[11px] font-semibold flex items-center gap-1 border border-slate-200 touch-manipulation cursor-pointer"
               >
                 <ShieldCheck className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">운영진전환</span>
@@ -71,9 +72,10 @@ export default function Header() {
                 </p>
               </div>
               <button
+                type="button"
                 onClick={() => switchUserRole('member')}
                 title="회원 모드로 전환"
-                className="ml-1 p-1.5 rounded-lg bg-violet-50 hover:bg-violet-100 text-violet-700 transition-colors text-[11px] font-semibold flex items-center gap-1 border border-violet-200"
+                className="ml-1 p-1.5 rounded-lg bg-violet-50 hover:bg-violet-100 text-violet-700 transition-colors text-[11px] font-semibold flex items-center gap-1 border border-violet-200 touch-manipulation cursor-pointer"
               >
                 <UserIcon className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">회원전환</span>
