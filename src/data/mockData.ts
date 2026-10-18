@@ -1,0 +1,230 @@
+import { ClassSession, TicketType, Notice, User } from '@/types';
+
+export const CLUB_INFO = {
+  name: '아다지오 발레 (Adagio Ballet)',
+  bankName: '토스뱅크',
+  accountNumber: '1000-2468-1357',
+  accountHolder: '아다지오(발레동호회)',
+  refundDayText: '매월 15일 일괄 정산',
+  noticeEmail: 'adagio.ballet@company.com',
+};
+
+export const INITIAL_TICKET_TYPES: TicketType[] = [
+  {
+    id: 'ticket-regular-8',
+    title: '11월 정기 수강권 (월 8회)',
+    description: '주 2회 권장 / 전 클래스 자유 예약 가능',
+    totalCount: 8,
+    price: 130000,
+    validDays: 31,
+    category: 'regular',
+  },
+  {
+    id: 'ticket-regular-4',
+    title: '11월 정기 수강권 (월 4회)',
+    description: '주 1회 권장 / 전 클래스 자유 예약 가능',
+    totalCount: 4,
+    price: 75000,
+    validDays: 31,
+    category: 'regular',
+  },
+  {
+    id: 'ticket-coupon-1',
+    title: '1회 수강권 (체험 / 원데이 쿠폰)',
+    description: '동호회 신규 체험 및 비정기 수강용 (발급 후 30일)',
+    totalCount: 1,
+    price: 20000,
+    validDays: 30,
+    category: 'coupon',
+  },
+];
+
+export const INITIAL_CLASSES: ClassSession[] = [
+  // 월요일
+  {
+    id: 'class-mon-1',
+    dayOfWeek: 'mon',
+    dayLabel: '월요일',
+    time: '19:00 - 20:10',
+    title: '기초 바워크 & 바른자세 스트레칭',
+    instructor: '이지원 강사',
+    level: '입문/기초',
+    capacity: 14,
+    location: '사내 발레 스튜디오 A',
+    description: '기본 턴아웃, 플리에, 탄듀 등 기초 매트 및 바 기본기를 다지는 클래스',
+  },
+  {
+    id: 'class-mon-2',
+    dayOfWeek: 'mon',
+    dayLabel: '월요일',
+    time: '20:15 - 21:25',
+    title: '레벨 1 센터 & 알레그로 점프',
+    instructor: '이지원 강사',
+    level: '레벨 1',
+    capacity: 14,
+    location: '사내 발레 스튜디오 A',
+    description: '센터 아다지오와 가벼운 점프, 회전 기초 동작을 배우는 클래스',
+  },
+
+  // 화요일
+  {
+    id: 'class-tue-1',
+    dayOfWeek: 'tue',
+    dayLabel: '화요일',
+    time: '19:00 - 20:10',
+    title: '클래식 베이직 클래스',
+    instructor: '김민지 강사',
+    level: '입문/기초',
+    capacity: 14,
+    location: '사내 발레 스튜디오 A',
+    description: '유연성 증진과 척추 기립근 강화를 위한 정통 클래식 바',
+  },
+  {
+    id: 'class-tue-2',
+    dayOfWeek: 'tue',
+    dayLabel: '화요일',
+    time: '20:15 - 21:25',
+    title: '포인트슈즈(토슈즈) 입문 & 발목 강화',
+    instructor: '김민지 강사',
+    level: '레벨 1 이상',
+    capacity: 14,
+    location: '사내 발레 스튜디오 A',
+    description: '토슈즈 착용 전 테라밴드 발목 강화 운동 및 토슈즈 바워크',
+  },
+
+  // 수요일 (2개 + Half 클래스)
+  {
+    id: 'class-wed-1',
+    dayOfWeek: 'wed',
+    dayLabel: '수요일',
+    time: '18:30 - 19:35',
+    title: '코어 필라발레 & 매트 워크아웃',
+    instructor: '박서연 강사',
+    level: '전체 레벨',
+    capacity: 14,
+    location: '사내 발레 스튜디오 A',
+    description: '퇴근 후 뭉친 어깨와 골반을 풀어주는 코어 집중 프로그램',
+  },
+  {
+    id: 'class-wed-2',
+    dayOfWeek: 'wed',
+    dayLabel: '수요일',
+    time: '19:40 - 20:50',
+    title: '레벨 1.5 테크닉 & 왈츠',
+    instructor: '박서연 강사',
+    level: '레벨 1.5',
+    capacity: 14,
+    location: '사내 발레 스튜디오 A',
+    description: '그랑제테, 피루엣 등 디테일한 발레 테크닉 마스터',
+  },
+  {
+    id: 'class-wed-3',
+    dayOfWeek: 'wed',
+    dayLabel: '수요일',
+    time: '20:55 - 21:35 (Half 40분)',
+    title: '토슈즈 심화 바리에이션 (집중 소수정예)',
+    instructor: '박서연 강사',
+    level: '중급',
+    capacity: 7, // 하프 소수정예
+    location: '사내 발레 스튜디오 A',
+    description: '40분간 진행되는 토슈즈 센터 작품 집중 코칭 (정원 7명)',
+  },
+
+  // 목요일
+  {
+    id: 'class-thu-1',
+    dayOfWeek: 'thu',
+    dayLabel: '목요일',
+    time: '19:00 - 20:10',
+    title: '토탈 바레 & 폴드브라 라인',
+    instructor: '정다은 강사',
+    level: '입문/기초',
+    capacity: 14,
+    location: '사내 발레 스튜디오 A',
+    description: '아름다운 상체 라인과 시선 처리, 우아한 폴드브라 집중 훈련',
+  },
+  {
+    id: 'class-thu-2',
+    dayOfWeek: 'thu',
+    dayLabel: '목요일',
+    time: '20:15 - 21:25',
+    title: '클래식 발레 바리에이션 작품반',
+    instructor: '정다은 강사',
+    level: '레벨 1 이상',
+    capacity: 14,
+    location: '사내 발레 스튜디오 A',
+    description: '유명 발레 명작(지젤, 백조의 호수 등)의 대표 솔로 안무 배우기',
+  },
+
+  // 금요일
+  {
+    id: 'class-fri-1',
+    dayOfWeek: 'fri',
+    dayLabel: '금요일',
+    time: '19:00 - 20:10',
+    title: '불금 릴렉스 힐링발레',
+    instructor: '이지원 강사',
+    level: '전체 레벨',
+    capacity: 14,
+    location: '사내 발레 스튜디오 A',
+    description: '한 주간의 피로를 날리는 클래식 음악과 함께하는 편안한 바워크',
+  },
+  {
+    id: 'class-fri-2',
+    dayOfWeek: 'fri',
+    dayLabel: '금요일',
+    time: '20:15 - 21:25',
+    title: '올레벨 센터워크 & 턴 테크닉',
+    instructor: '이지원 강사',
+    level: '전체 레벨',
+    capacity: 14,
+    location: '사내 발레 스튜디오 A',
+    description: '센터에서의 회전 감각과 밸런스를 찾는 금요 스페셜 클래스',
+  },
+];
+
+export const INITIAL_NOTICES: Notice[] = [
+  {
+    id: 'notice-1',
+    title: '📢 아다지오 발레 모바일 웹 오픈 & 스튜디오메이트 앱 전환 안내',
+    category: '필독',
+    author: '동호회 운영진',
+    createdAt: '2026-10-18',
+    content: `안녕하세요, 아다지오 발레 동호회 회원 여러분!\n\n기존에 설문조사와 스튜디오메이트 앱으로 분산되어 있던 수강신청 및 수강권 관리를 단일 모바일 웹으로 통합 오픈하였습니다.\n\n[주요 변경사항]\n1. 모바일 브라우저에서 바로 클래스 잔여석 확인 및 원클릭 예약\n2. 1회 체험 쿠폰 및 정기권 신청 시 토스 앱 간편 송금 지원\n3. 취소 마감시간(수업 3시간 전) 이전 취소 시 수강권 자동 환원\n4. 중도 환불 신청은 웹에서 접수 시 매월 15일에 일괄 정산됩니다.`,
+  },
+  {
+    id: 'notice-2',
+    title: '🩰 11월 수강신청 오픈 일정 및 입금 순서 안내',
+    category: '필독',
+    author: '총무팀',
+    createdAt: '2026-10-17',
+    content: `11월 정기권 및 1회 쿠폰 신청이 시작되었습니다.\n\n- 신청 후 토스 송금 딥링크를 통해 입금해주시면 운영진 확인 즉시 수강권이 자동 충전됩니다.\n- 인기 클래스(수요일 토슈즈반, 화요일 입문 등)는 선착순 14명 마감되니 미리 수강권을 충전해두시면 오픈 시 빠르게 예약하실 수 있습니다!`,
+  },
+  {
+    id: 'notice-3',
+    title: '💧 스튜디오 내 복장 및 개인 준비물 안내',
+    category: '일반',
+    author: '운영진',
+    createdAt: '2026-10-15',
+    content: `쾌적한 연습을 위해 발레슈즈(또는 미끄럼방지 양말), 편안한 운동복(레오타드 or 티셔츠/레깅스), 개인 텀블러를 지참해주세요. 스튜디오 내 탈의실이 마련되어 있습니다.`,
+  },
+];
+
+export const MOCK_USERS: User[] = [
+  {
+    id: 'user-1',
+    name: '김발레',
+    email: 'ballet.kim@company.com',
+    phone: '010-1234-5678',
+    department: '디지털솔루션사업부 개발팀',
+    role: 'member',
+  },
+  {
+    id: 'admin-1',
+    name: '최운영(회장)',
+    email: 'admin.ballet@company.com',
+    phone: '010-9876-5432',
+    department: '경영혁신실 기획팀',
+    role: 'admin',
+  },
+];
