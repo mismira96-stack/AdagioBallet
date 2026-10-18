@@ -55,13 +55,13 @@ export default function TossPaymentModal({ ticketType, onClose, onSuccess }: Tos
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-xs p-0 sm:p-4 animate-in fade-in duration-200">
-      <div className="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl border border-rose-100 overflow-hidden max-h-[92vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-xs p-0 sm:p-4 animate-in fade-in duration-200">
+      <div className="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl border border-violet-100 overflow-hidden max-h-[92vh] flex flex-col">
         {/* Modal Header */}
-        <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
+        <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-violet-50/50">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
-            <h3 className="font-bold text-slate-800 text-base">수강권 신청 및 입금 안내</h3>
+            <span className="w-2.5 h-2.5 rounded-full bg-violet-600" />
+            <h3 className="font-bold text-slate-900 text-base">수강권 신청 및 입금 안내</h3>
           </div>
           <button
             onClick={onClose}
@@ -72,7 +72,7 @@ export default function TossPaymentModal({ ticketType, onClose, onSuccess }: Tos
         </div>
 
         {/* Modal Body */}
-        <div className="p-5 overflow-y-auto space-y-5">
+        <div className="p-5 overflow-y-auto space-y-4.5">
           {submitted ? (
             <div className="py-8 text-center space-y-3">
               <div className="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
@@ -81,21 +81,21 @@ export default function TossPaymentModal({ ticketType, onClose, onSuccess }: Tos
               <h4 className="text-lg font-bold text-slate-800">입금 확인 요청 완료!</h4>
               <p className="text-xs text-slate-500 leading-relaxed">
                 운영진이 입금 내역을 확인하는 즉시<br />
-                <strong className="text-rose-600">[{ticketType.title}]</strong>이 회원님의 계정에 자동 충전됩니다.
+                <strong className="text-violet-700">[{ticketType.title}]</strong>이 회원님의 계정에 자동 충전됩니다.
               </p>
             </div>
           ) : (
             <>
               {/* Product Info Card */}
-              <div className="bg-rose-50/60 rounded-2xl p-4 border border-rose-100/80">
-                <span className="text-[11px] font-semibold text-rose-600 uppercase tracking-wider">
-                  {ticketType.category === 'coupon' ? '1회 체험 쿠폰' : '정기 수강권'}
+              <div className="bg-slate-50/80 rounded-2xl p-4 border border-slate-200/90">
+                <span className="text-[11px] font-semibold text-violet-700 uppercase tracking-wider">
+                  {ticketType.category === 'coupon' ? '1회 쿠폰' : '정기 수강권'}
                 </span>
                 <h4 className="text-base font-bold text-slate-900 mt-0.5">{ticketType.title}</h4>
                 <p className="text-xs text-slate-500 mt-1">{ticketType.description}</p>
-                <div className="mt-3 pt-3 border-t border-rose-200/50 flex items-baseline justify-between">
-                  <span className="text-xs text-slate-600">입금 금액</span>
-                  <span className="text-xl font-extrabold text-rose-600 font-mono">
+                <div className="mt-3 pt-3 border-t border-slate-200 flex items-baseline justify-between">
+                  <span className="text-xs text-slate-600 font-medium">입금 금액</span>
+                  <span className="text-xl font-black text-slate-900 font-mono">
                     {ticketType.price.toLocaleString()}원
                   </span>
                 </div>
@@ -104,13 +104,13 @@ export default function TossPaymentModal({ ticketType, onClose, onSuccess }: Tos
               {/* Toss App Deep Link Quick Button */}
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-blue-500" />
+                  <Sparkles className="w-3.5 h-3.5 text-violet-600" />
                   토스(Toss) 간편 송금
                 </label>
                 <button
                   type="button"
                   onClick={handleOpenTossApp}
-                  className="w-full py-3.5 px-4 rounded-xl bg-[#0064FF] hover:bg-[#0052cc] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.99]"
+                  className="w-full py-3.5 px-4 rounded-2xl bg-[#0064FF] hover:bg-[#0052cc] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.99]"
                 >
                   <span className="text-base font-extrabold tracking-tight">toss</span>
                   <span>토스 앱으로 바로 송금하기</span>
@@ -122,13 +122,13 @@ export default function TossPaymentModal({ ticketType, onClose, onSuccess }: Tos
               </div>
 
               {/* Manual Bank Account Copy Box */}
-              <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200/80 space-y-2">
+              <div className="p-3.5 bg-slate-50/80 rounded-2xl border border-slate-200/80 space-y-2">
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-slate-500 font-medium">동호회 공식 입금 계좌</span>
                   <button
                     type="button"
                     onClick={handleCopyAccount}
-                    className="text-rose-600 hover:text-rose-700 font-semibold flex items-center gap-1 text-[11px] bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200"
+                    className="text-violet-700 hover:text-violet-900 font-semibold flex items-center gap-1 text-[11px] bg-white px-2 py-0.5 rounded-lg border border-slate-200"
                   >
                     {copied ? (
                       <>
@@ -163,7 +163,7 @@ export default function TossPaymentModal({ ticketType, onClose, onSuccess }: Tos
                     value={depositorName}
                     onChange={(e) => setDepositorName(e.target.value)}
                     placeholder="예: 김발레"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-hidden focus:ring-2 focus:ring-rose-500 focus:border-transparent font-medium"
+                    className="w-full px-3.5 py-2.5 rounded-2xl border border-slate-200 text-sm focus:outline-hidden focus:ring-2 focus:ring-violet-500 bg-slate-50/50 font-medium"
                   />
                   <p className="text-[11px] text-slate-400 mt-1">
                     운영진이 통장 입금내역과 대조 확인하므로 정확히 입력해주세요.
@@ -171,17 +171,17 @@ export default function TossPaymentModal({ ticketType, onClose, onSuccess }: Tos
                 </div>
 
                 {/* Information Notice */}
-                <div className="bg-amber-50 rounded-xl p-3 border border-amber-200/60 flex items-start gap-2 text-amber-800 text-[11px] leading-relaxed">
+                <div className="bg-amber-50 rounded-2xl p-3 border border-amber-200/60 flex items-start gap-2 text-amber-800 text-[11px] leading-relaxed">
                   <ShieldAlert className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                   <div>
                     송금 완료 후 아래 <strong>[입금완료 요청]</strong> 버튼을 꼭 눌러주세요. 운영진 확인 즉시 수강권이 자동 충전됩니다.
                   </div>
                 </div>
 
-                {/* Submit Button */}
+                {/* Submit Button in soft violet */}
                 <button
                   type="submit"
-                  className="w-full py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm shadow-md transition-all active:scale-[0.99]"
+                  className="w-full py-3.5 rounded-2xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-sm shadow-sm transition-all active:scale-[0.99]"
                 >
                   입금완료 요청 보내기
                 </button>

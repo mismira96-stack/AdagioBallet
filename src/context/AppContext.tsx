@@ -31,6 +31,9 @@ interface AppContextType {
   refundRequests: RefundRequest[];
   notices: Notice[];
 
+  // Classes & timetable status
+  updateClassStatus: (classId: string, status: 'active' | 'holiday' | 'makeup', holidayReason?: string) => void;
+
   // Bookings
   bookClass: (classId: string, ticketId: string) => { success: boolean; message: string; isWaitlist?: boolean };
   cancelBooking: (bookingId: string) => { success: boolean; message: string };
@@ -60,7 +63,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // Current user (defaults to member '김발레')
   const [currentUser, setCurrentUser] = useState<User>(MOCK_USERS[0]);
 
-  const [classes] = useState<ClassSession[]>(INITIAL_CLASSES);
+  const [classes, setClasses] = useState<ClassSession[]>(INITIAL_CLASSES);
   const [ticketTypes] = useState<TicketType[]>(INITIAL_TICKET_TYPES);
 
   // Persistent states
@@ -74,6 +77,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // Load from localStorage on mount
   useEffect(() => {
     try {
+      const savedClasses = localStorage.getItem('adagio_classes');
       const savedTickets = localStorage.getItem('adagio_tickets');
       const savedBookings = localStorage.getItem('adagio_bookings');
       const savedPayments = localStorage.getItem('adagio_payments');
@@ -82,6 +86,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       const savedUser = localStorage.getItem('adagio_user');
 
       if (savedUser) setCurrentUser(JSON.parse(savedUser));
+      if (savedClasses) setClasses(JSON.parse(savedClasses));
       
       if (savedTickets) {
         setUserTickets(JSON.parse(savedTickets));
@@ -94,6 +99,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           title: '11월 정기 수강권 (월 8회)',
           totalCount: 8,
           remainingCount: 7,
+          maxCancellations: 2, // 취소 한도 2회
+          cancellationCount: 0, // 사용한 취소 횟수
           expiresAt: '2026-11-30',
           status: 'active',
         };
@@ -190,13 +197,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // Save to localStorage whenever state changes
   useEffect(() => {
     if (!isLoaded) return;
+    localStorage.setItem('adagio_classes', JSON.stringify(classes));
     localStorage.setItem('adagio_tickets', JSON.stringify(userTickets));
     localStorage.setItem('adagio_bookings', JSON.stringify(bookings));
     localStorage.setItem('adagio_payments', JSON.stringify(paymentRequests));
     localStorage.setItem('adagio_refunds', JSON.stringify(refundRequests));
     localStorage.setItem('adagio_notices', JSON.stringify(notices));
     localStorage.setItem('adagio_user', JSON.stringify(currentUser));
-  }, [userTickets, bookings, paymentRequests, refundRequests, notices, currentUser, isLoaded]);
+  }, [classes, userTickets, bookings, paymentRequests, refundRequests, notices, currentUser, isLoaded]);
 
   // Role switch (for testing member vs admin view)
   const switchUserRole = (role: 'member' | 'admin') => {
@@ -209,6 +217,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const updateUserProfile = (profile: Partial<User>) => {
     setCurrentUser((prev) => ({ ...prev, ...profile }));
+  };
+
+  // Timetable monthly status management (holiday / makeup / active)
+  const updateClassStatus = (
+    classId: string,
+    status: 'active' | 'holiday' | 'makeup',
+    holidayReason?: string
+  ) => {
+    setClasses((prev) =>
+      prev.map((c) => (c.id === classId ? { ...c, status, holidayReason } : c))
+    );
   };
 
   // Booking helper
@@ -302,26 +321,54 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // Cancel Booking (auto-refunds pass, auto-promotes waitlist!)
+  // Cancel Booking (checks cancellation limits, auto-refunds pass, auto-promotes waitlist!)
   const cancelBooking = (bookingId: string) => {
     const targetBooking = bookings.find((b) => b.id === bookingId);
     if (!targetBooking) return { success: false, message: '예약 정보를 찾을 수 없습니다.' };
 
     const wasConfirmed = targetBooking.status === 'confirmed';
+    let ticketRefunded = false;
+    let cancelCountMsg = '';
+
+    if (wasConfirmed && targetBooking.ticketId) {
+      const ticket = userTickets.find((t) => t.id === targetBooking.ticketId);
+      if (ticket) {
+        // Check cancellation limit rule
+        if (ticket.maxCancellations === 0) {
+          return {
+            success: false,
+            message: '규정상 1회 체험권/원데이 쿠폰은 노쇼 방지를 위해 예약 취소 및 변경이 불가합니다.',
+          };
+        }
+
+        if (ticket.cancellationCount >= ticket.maxCancellations) {
+          return {
+            success: false,
+            message: `이번 달 취소 가능 횟수(최대 ${ticket.maxCancellations}회)를 모두 소진하셨습니다. 추가 취소는 불가합니다.`,
+          };
+        }
+
+        // Within limit: increment cancellationCount and refund remainingCount!
+        setUserTickets((prev) =>
+          prev.map((t) =>
+            t.id === targetBooking.ticketId
+              ? {
+                  ...t,
+                  remainingCount: t.remainingCount + 1,
+                  cancellationCount: t.cancellationCount + 1,
+                }
+              : t
+          )
+        );
+        ticketRefunded = true;
+        cancelCountMsg = `(취소 횟수: ${ticket.cancellationCount + 1}/${ticket.maxCancellations}회 사용)`;
+      }
+    }
 
     // Cancel this booking
     setBookings((prev) =>
       prev.map((b) => (b.id === bookingId ? { ...b, status: 'cancelled' } : b))
     );
-
-    // Refund ticket count if it was confirmed
-    if (wasConfirmed && targetBooking.ticketId) {
-      setUserTickets((prev) =>
-        prev.map((t) =>
-          t.id === targetBooking.ticketId ? { ...t, remainingCount: t.remainingCount + 1 } : t
-        )
-      );
-    }
 
     // Auto-promote first waitlisted member if available!
     if (wasConfirmed) {
@@ -346,7 +393,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       }
     }
 
-    return { success: true, message: '수강 예약이 정상적으로 취소되었습니다. (수강권 1회 환원 완료)' };
+    return {
+      success: true,
+      message: ticketRefunded
+        ? `수업 예약이 취소되었습니다. 수강권 1회가 자동 환원되었습니다. ${cancelCountMsg}`
+        : '대기 예약이 취소되었습니다.',
+    };
   };
 
   // Request Pass Purchase via Toss
@@ -389,6 +441,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       title: req.ticketTitle,
       totalCount: tType.totalCount,
       remainingCount: tType.totalCount,
+      maxCancellations: tType.maxCancellations ?? 1,
+      cancellationCount: 0,
       expiresAt: expDateStr,
       status: 'active',
     };
@@ -488,6 +542,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         paymentRequests,
         refundRequests,
         notices,
+        updateClassStatus,
         bookClass,
         cancelBooking,
         getClassBookings,

@@ -20,9 +20,9 @@ export default function NoticesTab() {
 
   return (
     <div className="space-y-4 pb-20">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between px-0.5">
         <h2 className="text-sm font-bold text-slate-800 flex items-center gap-1.5">
-          <Bell className="w-4 h-4 text-rose-500" />
+          <Bell className="w-4 h-4 text-violet-600" />
           공지사항 & 수강안내
         </h2>
         <span className="text-[11px] text-slate-400">총 {notices.length}개의 소식</span>
@@ -34,10 +34,10 @@ export default function NoticesTab() {
           <button
             key={cat}
             onClick={() => setFilter(cat)}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+            className={`px-3 py-1.5 rounded-2xl text-xs font-bold transition-all ${
               filter === cat
-                ? 'bg-rose-600 text-white shadow-xs'
-                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+                ? 'bg-violet-600 text-white shadow-xs'
+                : 'bg-white text-slate-600 border border-slate-200/90 hover:bg-violet-50/40'
             }`}
           >
             {cat}
@@ -54,8 +54,8 @@ export default function NoticesTab() {
           return (
             <div
               key={n.id}
-              className={`bg-white rounded-2xl border transition-all overflow-hidden ${
-                isUrgent ? 'border-rose-200 shadow-xs' : 'border-slate-200'
+              className={`bg-white rounded-3xl border transition-all overflow-hidden ${
+                isUrgent ? 'border-violet-300 shadow-2xs' : 'border-slate-200/90'
               }`}
             >
               {/* Header */}
@@ -71,7 +71,7 @@ export default function NoticesTab() {
                         필독
                       </span>
                     ) : (
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-violet-50 text-violet-700 border border-violet-200">
                         {n.category}
                       </span>
                     )}
@@ -87,7 +87,7 @@ export default function NoticesTab() {
 
               {/* Body */}
               {isExpanded && (
-                <div className="px-4 pb-4 pt-1 border-t border-slate-100 text-xs text-slate-600 whitespace-pre-line leading-relaxed bg-slate-50/40">
+                <div className="px-4 pb-4 pt-1 border-t border-slate-100 text-xs text-slate-600 whitespace-pre-line leading-relaxed bg-slate-50/50">
                   {n.content}
                   <div className="mt-3 pt-2 border-t border-slate-200/60 text-[11px] text-slate-400 flex justify-between">
                     <span>작성자: {n.author}</span>

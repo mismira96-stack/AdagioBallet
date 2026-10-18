@@ -12,7 +12,6 @@ import {
   RotateCcw,
   Check,
   CreditCard,
-  HeartHandshake,
 } from 'lucide-react';
 
 export default function ProfileTab() {
@@ -39,19 +38,19 @@ export default function ProfileTab() {
   return (
     <div className="space-y-4 pb-20">
       {/* Profile Card */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-linear-to-tr from-rose-500 to-rose-300 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+      <div className="bg-white rounded-3xl border border-slate-200/90 p-5 shadow-2xs">
+        <div className="flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-violet-500 to-purple-500 text-white flex items-center justify-center font-bold text-lg shadow-sm">
             {currentUser.name.substring(0, 1)}
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-2">
               <h2 className="text-base font-bold text-slate-900">{currentUser.name}</h2>
               <span
-                className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
                   currentUser.role === 'admin'
-                    ? 'bg-rose-100 text-rose-700 border border-rose-300'
-                    : 'bg-slate-100 text-slate-600 border border-slate-200'
+                    ? 'bg-purple-100 text-purple-800 border border-purple-200'
+                    : 'bg-violet-50 text-violet-700 border border-violet-200'
                 }`}
               >
                 {currentUser.role === 'admin' ? '동호회 운영진' : '정회원'}
@@ -63,13 +62,13 @@ export default function ProfileTab() {
 
         {/* Test Mode Switcher */}
         <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-          <span className="text-slate-500 font-medium">테스트 모드 전환</span>
+          <span className="text-slate-500 font-medium">체험 모드 전환</span>
           <div className="flex gap-1.5">
             <button
               onClick={() => switchUserRole('member')}
-              className={`px-2.5 py-1 rounded-lg font-bold text-[11px] transition-colors ${
+              className={`px-3 py-1.5 rounded-xl font-bold text-[11px] transition-colors ${
                 currentUser.role === 'member'
-                  ? 'bg-slate-900 text-white'
+                  ? 'bg-violet-600 text-white shadow-xs'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
@@ -77,9 +76,9 @@ export default function ProfileTab() {
             </button>
             <button
               onClick={() => switchUserRole('admin')}
-              className={`px-2.5 py-1 rounded-lg font-bold text-[11px] transition-colors ${
+              className={`px-3 py-1.5 rounded-xl font-bold text-[11px] transition-colors ${
                 currentUser.role === 'admin'
-                  ? 'bg-rose-600 text-white'
+                  ? 'bg-violet-600 text-white shadow-xs'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
@@ -90,13 +89,13 @@ export default function ProfileTab() {
       </div>
 
       {/* Edit Form */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
-        <h3 className="text-xs font-bold text-slate-800 mb-3 flex items-center gap-1.5">
-          <User className="w-4 h-4 text-rose-500" />
+      <div className="bg-white rounded-3xl border border-slate-200/90 p-5 shadow-2xs">
+        <h3 className="text-xs font-bold text-slate-800 mb-3.5 flex items-center gap-1.5">
+          <User className="w-4 h-4 text-violet-600" />
           회원 가입 및 기본 정보 수정
         </h3>
 
-        <form onSubmit={handleSave} className="space-y-3">
+        <form onSubmit={handleSave} className="space-y-3.5">
           <div>
             <label className="block text-[11px] font-bold text-slate-700 mb-1 flex items-center gap-1">
               <User className="w-3 h-3 text-slate-400" />
@@ -107,7 +106,7 @@ export default function ProfileTab() {
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-rose-500 font-medium"
+              className="w-full px-3.5 py-2.5 rounded-2xl border border-slate-200 text-xs focus:ring-2 focus:ring-violet-500 focus:outline-hidden font-medium bg-slate-50/50"
             />
           </div>
 
@@ -122,7 +121,7 @@ export default function ProfileTab() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="id@company.com"
-              className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-rose-500 font-mono"
+              className="w-full px-3.5 py-2.5 rounded-2xl border border-slate-200 text-xs focus:ring-2 focus:ring-violet-500 focus:outline-hidden font-mono bg-slate-50/50"
             />
           </div>
 
@@ -137,7 +136,7 @@ export default function ProfileTab() {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="010-0000-0000"
-              className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-rose-500 font-mono"
+              className="w-full px-3.5 py-2.5 rounded-2xl border border-slate-200 text-xs focus:ring-2 focus:ring-violet-500 focus:outline-hidden font-mono bg-slate-50/50"
             />
           </div>
 
@@ -152,18 +151,18 @@ export default function ProfileTab() {
               value={department}
               onChange={(e) => setDepartment(e.target.value)}
               placeholder="예: 디지털솔루션사업부 개발팀"
-              className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-rose-500"
+              className="w-full px-3.5 py-2.5 rounded-2xl border border-slate-200 text-xs focus:ring-2 focus:ring-violet-500 focus:outline-hidden bg-slate-50/50"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-xs active:scale-[0.99]"
+            className="w-full py-3 rounded-2xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-xs active:scale-[0.99]"
           >
             {isSaved ? (
               <>
-                <Check className="w-4 h-4 text-emerald-400" />
-                <span>저장 완료!</span>
+                <Check className="w-4 h-4 text-emerald-300" />
+                <span>저장 완료되었습니다</span>
               </>
             ) : (
               <span>내 정보 저장하기</span>
@@ -173,12 +172,12 @@ export default function ProfileTab() {
       </div>
 
       {/* Club Bank Account Card */}
-      <div className="bg-slate-50 rounded-2xl border border-slate-200/80 p-4 text-xs space-y-1.5">
+      <div className="bg-slate-100/70 rounded-3xl border border-slate-200/80 p-4 text-xs space-y-1.5">
         <div className="font-bold text-slate-700 flex items-center gap-1.5">
-          <CreditCard className="w-4 h-4 text-rose-500" />
+          <CreditCard className="w-4 h-4 text-violet-600" />
           {CLUB_INFO.name} 공식 계좌
         </div>
-        <p className="font-mono font-bold text-slate-800 text-sm">
+        <p className="font-mono font-bold text-slate-900 text-sm">
           {CLUB_INFO.bankName} {CLUB_INFO.accountNumber}
         </p>
         <p className="text-slate-500 text-[11px]">
@@ -194,7 +193,7 @@ export default function ProfileTab() {
               resetToDefault();
             }
           }}
-          className="text-slate-400 hover:text-red-500 text-[11px] flex items-center justify-center gap-1 mx-auto transition-colors"
+          className="text-slate-400 hover:text-rose-500 text-[11px] flex items-center justify-center gap-1 mx-auto transition-colors"
         >
           <RotateCcw className="w-3 h-3" />
           <span>테스트 데이터 초기화</span>

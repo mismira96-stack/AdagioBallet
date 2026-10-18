@@ -11,11 +11,11 @@ import AdminTab from '@/components/AdminTab';
 import ProfileTab from '@/components/ProfileTab';
 
 function MainAppContent() {
-  const [currentTab, setCurrentTab] = useState<TabType>('schedule');
+  const [currentTab, setCurrentTab] = useState<TabType>('tickets');
   const { currentUser } = useApp();
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-between">
+    <div className="min-h-screen bg-[#FBFBFE] flex flex-col justify-between">
       {/* Top Header */}
       <Header />
 

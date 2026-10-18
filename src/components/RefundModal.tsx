@@ -59,13 +59,13 @@ export default function RefundModal({ ticket, onClose, onSuccess }: RefundModalP
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-xs p-0 sm:p-4 animate-in fade-in duration-200">
-      <div className="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl border border-rose-100 overflow-hidden max-h-[92vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-xs p-0 sm:p-4 animate-in fade-in duration-200">
+      <div className="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl border border-violet-100 overflow-hidden max-h-[92vh] flex flex-col">
         {/* Header */}
-        <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
+        <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-violet-50/50">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-            <h3 className="font-bold text-slate-800 text-base">수강권 환불 신청</h3>
+            <span className="w-2.5 h-2.5 rounded-full bg-violet-600" />
+            <h3 className="font-bold text-slate-900 text-base">수강권 환불 신청</h3>
           </div>
           <button
             onClick={onClose}
@@ -85,37 +85,43 @@ export default function RefundModal({ ticket, onClose, onSuccess }: RefundModalP
               <h4 className="text-lg font-bold text-slate-800">환불 신청 접수 완료!</h4>
               <p className="text-xs text-slate-500 leading-relaxed">
                 운영진에게 환불 요청이 안전하게 접수되었습니다.<br />
-                동호회 회칙에 따라 <strong className="text-rose-600">매월 15일</strong>에 정산되어<br />
+                동호회 회칙에 따라 <strong className="text-violet-700">매월 15일</strong>에 정산되어<br />
                 입력하신 계좌로 일괄 입금됩니다.
               </p>
             </div>
           ) : (
             <>
               {/* Ticket Summary */}
-              <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200/80">
+              <div className="bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80">
                 <div className="flex justify-between items-start">
                   <div>
                     <span className="text-[11px] font-semibold text-slate-500">환불 대상 수강권</span>
                     <h4 className="text-sm font-bold text-slate-900 mt-0.5">{ticket.title}</h4>
                   </div>
-                  <span className="text-xs bg-rose-100 text-rose-700 font-bold px-2 py-1 rounded-lg">
-                    잔여 {ticket.remainingCount}회
-                  </span>
+                  <div className="text-right">
+                    <span className="text-base font-black font-mono text-violet-700">
+                      {ticket.remainingCount}회 남음
+                    </span>
+                    <span className="text-xs text-slate-400 font-mono block">/{ticket.totalCount}회</span>
+                  </div>
                 </div>
-                <div className="mt-3 pt-3 border-t border-slate-200 flex items-center gap-2 text-xs text-slate-500">
-                  <Calendar className="w-4 h-4 text-slate-400" />
-                  <span>환불 정산일: <strong className="text-slate-700 font-semibold">{CLUB_INFO.refundDayText}</strong></span>
+                <div className="mt-2 pt-2 border-t border-slate-200/60 flex items-center justify-between text-xs text-slate-600">
+                  <span>정산 예정일</span>
+                  <span className="font-bold text-slate-800 flex items-center gap-1">
+                    <Calendar className="w-3.5 h-3.5 text-violet-600" />
+                    매월 15일 일괄 입금
+                  </span>
                 </div>
               </div>
 
               {/* Form */}
               <form onSubmit={handleSubmit} className="space-y-3.5">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">환불 은행</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">환불 입금 은행</label>
                   <select
                     value={bankName}
                     onChange={(e) => setBankName(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-hidden focus:ring-2 focus:ring-rose-500 bg-white"
+                    className="w-full px-3.5 py-2.5 rounded-2xl border border-slate-200 text-sm focus:outline-hidden focus:ring-2 focus:ring-violet-500 bg-slate-50/50"
                   >
                     {COMMON_BANKS.map((b) => (
                       <option key={b} value={b}>
@@ -133,7 +139,7 @@ export default function RefundModal({ ticket, onClose, onSuccess }: RefundModalP
                     value={accountNumber}
                     onChange={(e) => setAccountNumber(e.target.value)}
                     placeholder="예: 110-123-456789"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-hidden focus:ring-2 focus:ring-rose-500 font-mono"
+                    className="w-full px-3.5 py-2.5 rounded-2xl border border-slate-200 text-sm focus:outline-hidden focus:ring-2 focus:ring-violet-500 font-mono bg-slate-50/50"
                   />
                 </div>
 
@@ -145,7 +151,7 @@ export default function RefundModal({ ticket, onClose, onSuccess }: RefundModalP
                     value={accountHolder}
                     onChange={(e) => setAccountHolder(e.target.value)}
                     placeholder="예금주 성함"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-hidden focus:ring-2 focus:ring-rose-500 font-medium"
+                    className="w-full px-3.5 py-2.5 rounded-2xl border border-slate-200 text-sm focus:outline-hidden focus:ring-2 focus:ring-violet-500 font-medium bg-slate-50/50"
                   />
                 </div>
 
@@ -156,11 +162,11 @@ export default function RefundModal({ ticket, onClose, onSuccess }: RefundModalP
                     value={reason}
                     onChange={(e) => setReason(e.target.value)}
                     placeholder="환불 사유를 간단히 적어주세요."
-                    className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs focus:outline-hidden focus:ring-2 focus:ring-rose-500 resize-none"
+                    className="w-full px-3.5 py-2 rounded-2xl border border-slate-200 text-xs focus:outline-hidden focus:ring-2 focus:ring-violet-500 resize-none bg-slate-50/50"
                   />
                 </div>
 
-                <div className="bg-amber-50 rounded-xl p-3 border border-amber-200/60 flex items-start gap-2 text-amber-800 text-[11px] leading-relaxed">
+                <div className="bg-amber-50 rounded-2xl p-3 border border-amber-200/60 flex items-start gap-2 text-amber-800 text-[11px] leading-relaxed">
                   <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                   <div>
                     환불 요청 시 기존 수강권은 즉시 회수 대기 상태로 전환되며, 남은 횟수에 비례하여 15일에 정산 송금됩니다.
@@ -169,7 +175,7 @@ export default function RefundModal({ ticket, onClose, onSuccess }: RefundModalP
 
                 <button
                   type="submit"
-                  className="w-full py-3.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-sm shadow-md transition-all active:scale-[0.99]"
+                  className="w-full py-3.5 rounded-2xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-sm shadow-xs transition-all active:scale-[0.99]"
                 >
                   환불 요청 접수하기
                 </button>
