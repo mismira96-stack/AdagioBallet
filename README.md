@@ -1,36 +1,143 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🩰 아다지오 발레 (Adagio Ballet)
 
-## Getting Started
+> **사내 발레 동호회 모바일 웹 포털**  
+> 모자이크(Mosaic) 설문조사 대신, **1회 쿠폰 / 정기 수강권 간편 신청 + 토스(Toss) 송금 + 스튜디오메이트(StudioMate) 충전 연동**을 원스톱으로 지원하는 동호회 전용 웹앱입니다.
 
-First, run the development server:
+---
 
+## 📌 1. 프로젝트 배경 및 운영 모델 (Operational Scope)
+
+### 기존 운영의 Pain Point
+1. **모자이크(Mosaic) 설문조사 취합의 번거로움**: 매달 또는 수시로 신청 폼을 만들고 엑셀로 다운로드받아 정리해야 하는 운영진의 피로도.
+2. **수동 계좌 이체 & 입금자 대조 어려움**: 회원이 입금자명을 다르게 보내거나, 동명이인 또는 가족 명의로 송금 시 입금 확인 지연.
+3. **1회 체험 쿠폰 관리 분산**: 정규반 외에 1회 쿠폰 신청자가 수시로 발생할 때마다 카톡과 통장을 일일이 대조.
+
+### 해결 방식: Phase 1 하이브리드 운영
+- **회원**: 모바일 웹에서 원하는 상품(1회권/정기권) 선택 → **[토스 앱으로 바로 송금하기]** 클릭(금액·계좌 자동 입력) → 입금완료 요청 1초 완료.
+- **운영진**: [운영진 콘솔]에서 입금자 확인 → **[번호 복사]** 버튼으로 스튜디오메이트(StudioMate) 앱에서 즉시 회원 검색 후 수강권 충전.
+- **수업 예약 / 출석 / 취소 / 보강**: 회원들이 이미 익숙한 **스튜디오메이트 앱**을 그대로 유지하여 운영 혼선을 방지합니다.
+
+---
+
+## 💎 2. 수강료 및 핵심 운영 규정
+
+### ① 1회 체험 쿠폰 (One-day Pass)
+| 상품명 | 수강 대상 수업 | 금액 | 유효기간 | 환불 규정 |
+| :--- | :--- | :--- | :--- | :--- |
+| **1회 쿠폰 (Full 80분)** | 80분 정규 바&센터 및 **금요 파드되** | **15,000원** | 발급일로부터 **1개월(30일)** | **신청 후 환불 불가** |
+| **1회 쿠폰 (Half 40분)** | 40분 런치 스트레칭, 포인트 입문, 월요 입문반 | **10,000원** | 발급일로부터 **1개월(30일)** | **신청 후 환불 불가** |
+
+> ※ **1회 쿠폰 안내**: 노쇼 방지 및 강사료 정산 기준에 따라 신청/발급 후 취소 및 환불이 불가합니다.
+
+### ② 정기 수강권 (Monthly Pass)
+| 상품명 | 수강 대상 수업 | 금액 | 취소·보강 허용 한도 | 환불 규정 |
+| :--- | :--- | :--- | :--- | :--- |
+| **Full 정기 수강권 (4회)** | 80분 정규 및 금요 파드되 (월 4회) | **50,000원** | 월 1회 취소/보강 가능 | **매월 15일 일괄 환불** |
+| **Full 정기 수강권 (8회)** | 80분 정규 및 금요 파드되 (월 8회) | **100,000원** | 월 2회 취소/보강 가능 | **매월 15일 일괄 환불** |
+| **Half 정기 수강권 (4회)** | 40분 런치 스트레칭 및 Half 클래스 (월 4회) | **25,000원** | 월 1회 취소/보강 가능 | **매월 15일 일괄 환불** |
+| **Half 정기 수강권 (8회)** | 40분 런치 스트레칭 및 Half 클래스 (월 8회) | **50,000원** | 월 2회 취소/보강 가능 | **매월 15일 일괄 환불** |
+
+---
+
+## 📅 3. 실제 클래스 시간표 (StudioMate 규격)
+
+스튜디오메이트 캡처 원본을 그대로 반영한 정규 클래스 시간표입니다.
+
+- **월요일 (민경림 강사)**: 17:40(Half 입문반 14명) / 18:20(Full Lev 0.5 14명) / 19:40(Full Lev 1 14명)
+- **화요일 (김진희 강사)**: 11:40(런치1 40분 14명) / 12:20(런치2 40분 14명) / 17:40(Full Lev 0.5 14명) / 19:00(Full Lev 1 14명) / 20:20(Half 포인트입문 14명)
+- **수요일 (이명은 강사)**: 17:40(Full Lev 1 14명) / 19:00(Full Lev 1.5 14명)
+- **목요일 (김진희 강사)**: 17:40(Full Lev 0.5 14명) / 19:00(Full Lev 1 14명)
+- **금요일 (민경림 / 홍성우 강사)**:
+  - 12:20 ~ 13:00 (40분 런치): 금_런치_스트레칭2 (민경림 강사, 14명)
+  - 17:40 ~ 19:00 (80분 Full): 금요일_lev1 (홍성우 강사, 14명)
+  - 19:00 ~ 20:20 (80분 Full): 금요일_lev1.5 (홍성우 강사, 14명)
+  - **20:20 ~ 21:40 (80분 Full)**: **금요일_파드되 (Pas de deux)** (홍성우 강사, **소수정예 5명 정원 마감**)
+
+---
+
+## 🎨 4. 디자인 시스템 (Design Palette)
+
+블랙 위주의 어두운 화면 대신, 발레 동호회의 품격과 산뜻함을 살린 소프트 파스텔 팔레트를 적용했습니다.
+
+- **Primary Accent (연보라 / Lilac)**: `bg-violet-600`, `from-violet-500 to-purple-500` (상단 잔여 수강권 카드, 메인 액션 버튼)
+- **Neutral (연그레이 / Cashmere)**: `bg-[#FBFBFE]`, `bg-slate-50`, `border-slate-200/90` (전체 배경 및 카드 면)
+- **Sage Green (연그린)**: `bg-emerald-50`, `text-emerald-700` (런치 40분 클래스 뱃지, 예약 확정 상태)
+- **Soft Rose (연핑크)**: `bg-rose-50`, `text-rose-700`, `bg-rose-500` (공휴일 휴강 뱃지, 필독 공지사항 태그)
+
+---
+
+## 💻 5. 기술 스택 (Tech Stack)
+
+- **Framework**: [Next.js 16 (App Router)](https://nextjs.org/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **State & Storage**: React Context API (`AppContext.tsx`) + Browser `localStorage` (무설치 로컬 영속화)
+- **Integration**: Toss 간편송금 딥링크 (`supertoss://send?...`)
+
+---
+
+## 🚀 6. 실행 및 배포 가이드
+
+### 로컬 개발 환경 실행
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# 1. 의존성 설치
+npm install
+
+# 2. 로컬 개발 서버 실행 (모바일 접속 허용)
+npm run dev -- -H 0.0.0.0 -p 3000
+
+# 3. 접속 주소
+# - PC 브라우저: http://localhost:3000
+# - 스마트폰 (동일 Wi-Fi): http://<PC_IP_주소>:3000 (예: http://192.168.45.4:3000)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 프로덕션 빌드 검증
+```bash
+npm run build
+npm run start
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Vercel 1분 무료 웹 배포 (추천)
+1. GitHub 저장소 연동: [https://github.com/mismira96-stack/AdagioBallet](https://github.com/mismira96-stack/AdagioBallet)
+2. [Vercel](https://vercel.com/) 로그인 후 `Add New Project` → `AdagioBallet` 선택
+3. `Deploy` 버튼 클릭 시 바로 `https://adagio-ballet.vercel.app` 같은 모바일 공유 링크가 발급됩니다.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 📁 7. 프로젝트 구조
 
-To learn more about Next.js, take a look at the following resources:
+```
+AdagioBallet/
+├── src/
+│   ├── app/
+│   │   ├── globals.css         # 테마 배경 및 전역 CSS
+│   │   ├── layout.tsx          # 모바일 뷰포트 및 메타데이터
+│   │   └── page.tsx            # 메인 앱 프레임 및 탭 컨트롤러
+│   ├── components/
+│   │   ├── Header.tsx          # 상단 로고, 회원/운영진 모드 1초 전환
+│   │   ├── Navigation.tsx      # 하단 5개 탭 내비게이션 바
+│   │   ├── TicketsTab.tsx      # 1회권/정기권 카탈로그, 내 보유권, 토스 모달 호출
+│   │   ├── ScheduleTab.tsx     # 주차별 요일 시간표, 파드되 5인 정원, 예약/취소
+│   │   ├── AdminTab.tsx        # 입금확인 대기열, 출석부 복사, 휴일설정, 15일환불
+│   │   ├── NoticesTab.tsx      # 아코디언 공지사항
+│   │   ├── ProfileTab.tsx      # 내 정보 수정 및 테스트 데이터 리셋
+│   │   ├── TossPaymentModal.tsx# 토스 딥링크 송금 및 입금자명 입력 모달
+│   │   └── RefundModal.tsx     # 15일 일괄 환불 신청 모달
+│   ├── context/
+│   │   └── AppContext.tsx      # 수강권 차감, 취소 횟수 제한, 대기열 자동 승급 로직
+│   ├── data/
+│   │   └── mockData.ts         # 스튜디오메이트 시간표 원본, 수강권 가격표, 계좌정보
+│   └── types/
+│       └── index.ts            # User, TicketType, ClassSession, Booking 인터페이스
+├── README.md                   # 프로젝트 개요 및 실행 가이드
+└── HANDOFF.md                  # 운영진 및 개발자 인수인계 문서
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 👥 8. 테스트 계정 안내
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **일반회원**: `김발레` (디지털솔루션사업부 개발팀, 010-1234-5678)
+- **운영진(총무)**: `최운영(회장)` (경경혁신실 기획팀, 010-9876-5432)
+- 화면 우측 상단의 **[운영진전환]** / **[회원전환]** 버튼으로 언제든 1초 만에 권한을 바꾸어 테스트할 수 있습니다.
